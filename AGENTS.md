@@ -1,6 +1,6 @@
 # Правила работы с проектом
 
-- Целевая плата: **ESP32-WROOM-32**. Скетч: `lengmur_socket/lengmur_socket.ino`.
-- Разрешено редактировать код и документацию, а также проверять сборку с помощью `arduino-cli compile --profile esp32_wroom_32 lengmur_socket`. Профиль `lengmur_socket/sketch.yaml` закрепляет версии ESP32 core и ArduinoJson. Для стандартного ESP32 Dev Module используется FQBN `esp32:esp32:esp32`.
+- Целевая плата: **ESP32-WROOM-32**. Скетч: `esp/esp.ino`, протокол: `esp/protocol.cpp` и `esp/protocol.h`.
+- Разрешено редактировать код и документацию, а также проверять сборку с помощью `arduino-cli compile --profile esp32_wroom_32 esp`. Профиль `esp/sketch.yaml` закрепляет версии ESP32 core и ArduinoJson. Для стандартного ESP32 Dev Module используется FQBN `esp32:esp32:esp32`.
 - **Запрещено прошивать плату**: не запускайте `arduino-cli upload`, `arduino-cli compile --upload`, `esptool` для записи или стирания flash и любые другие команды загрузки прошивки. Не выполняйте запись или стирание памяти устройства даже ради проверки.
 - Проверка задачи заканчивается на компиляции и анализе кода. Если проверить работу на устройстве необходимо, опишите пользователю нужные действия без их выполнения.
