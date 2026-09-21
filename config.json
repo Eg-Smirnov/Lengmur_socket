@@ -1,0 +1,8 @@
+{
+  "fields": {
+    "setting_1": { "type": "int32", "default": 0 },
+    "setting_2": { "type": "int32", "default": 0 },
+    "setting_3": { "type": "int32", "default": 0 },
+    "setting_str": { "type": "string", "default": "aboab"}
+  }
+}
