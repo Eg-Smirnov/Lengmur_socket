@@ -1,9 +1,12 @@
+#include "protocol.h"
+
 #include <Arduino.h>
-#line 1 "C:\\Users\\Egor\\Documents\\уеба\\лаба\\Lengmur_socket\\lengmur_socket\\lengmur_socket.ino"
 #include <ArduinoJson.h>
 #include <Preferences.h>
 #include <stdint.h>
 #include <string.h>
+
+#include "config_generated.h"
 
 namespace {
 
@@ -12,84 +15,64 @@ constexpr size_t kMaxLineLength = 511;
 constexpr char kNamespace[] = "lengmur";
 constexpr char kConfigKey[] = "config";
 
-struct Config {
-  int32_t setting_1 = 0;
-  int32_t setting_2 = 0;
-  int32_t setting_3 = 0;
-};
-
-Config config;
+JsonDocument config;
 char inputLine[kMaxLineLength + 1];
 size_t inputLength = 0;
 bool discardLongLine = false;
 
-void addConfig(JsonObject object, const Config &value) {
-  object["setting_1"] = value.setting_1;
-  object["setting_2"] = value.setting_2;
-  object["setting_3"] = value.setting_3;
-}
-
-bool setField(Config &target, const char *name, JsonVariantConst value) {
-  if (name == nullptr || !value.is<int32_t>()) {
-    return false;
-  }
-
-  const int32_t number = value.as<int32_t>();
-  if (strcmp(name, "setting_1") == 0) {
-    target.setting_1 = number;
-  } else if (strcmp(name, "setting_2") == 0) {
-    target.setting_2 = number;
-  } else if (strcmp(name, "setting_3") == 0) {
-    target.setting_3 = number;
-  } else {
-    return false;
-  }
-  return true;
-}
-
-bool getField(const Config &source, const char *name, int32_t &value) {
+const FieldDefinition *findField(const char *name) {
   if (name == nullptr) {
-    return false;
+    return nullptr;
   }
-  if (strcmp(name, "setting_1") == 0) {
-    value = source.setting_1;
-  } else if (strcmp(name, "setting_2") == 0) {
-    value = source.setting_2;
-  } else if (strcmp(name, "setting_3") == 0) {
-    value = source.setting_3;
-  } else {
-    return false;
+  for (const FieldDefinition &field : kFields) {
+    if (strcmp(name, field.name) == 0) {
+      return &field;
+    }
   }
-  return true;
+  return nullptr;
 }
 
-bool parseConfig(JsonVariantConst input, Config &result) {
+bool validValue(FieldType type, JsonVariantConst value) {
+  switch (type) {
+    case FieldType::Int32:
+      return value.is<int32_t>();
+    case FieldType::Bool:
+      return value.is<bool>();
+    case FieldType::String:
+      return value.is<const char *>();
+  }
+  return false;
+}
+
+bool setField(JsonDocument &target, const char *name, JsonVariantConst value) {
+  const FieldDefinition *field = findField(name);
+  if (field == nullptr || !validValue(field->type, value)) {
+    return false;
+  }
+  target[name].set(value);
+  return !target.overflowed();
+}
+
+bool parseConfig(JsonVariantConst input, JsonDocument &result) {
   if (!input.is<JsonObjectConst>()) {
     return false;
   }
-
-  const JsonObjectConst object = input.as<JsonObjectConst>();
-  if (object.size() != 3) {
+  JsonObjectConst object = input.as<JsonObjectConst>();
+  if (object.size() != kFieldCount) {
     return false;
   }
-
-  Config candidate;
-  if (!setField(candidate, "setting_1", object["setting_1"]) ||
-      !setField(candidate, "setting_2", object["setting_2"]) ||
-      !setField(candidate, "setting_3", object["setting_3"])) {
-    return false;
+  for (const FieldDefinition &field : kFields) {
+    if (!validValue(field.type, object[field.name])) {
+      return false;
+    }
   }
-  result = candidate;
-  return true;
+  return result.set(input) && !result.overflowed();
 }
 
-bool saveConfig(const Config &value) {
-  JsonDocument document;
-  addConfig(document.to<JsonObject>(), value);
-
+bool saveConfig(const JsonDocument &value) {
   String serialized;
-  serializeJson(document, serialized);
-  if (serialized.length() == 0 || document.overflowed()) {
+  serializeJson(value, serialized);
+  if (serialized.length() == 0 || value.overflowed()) {
     return false;
   }
 
@@ -103,6 +86,8 @@ bool saveConfig(const Config &value) {
 }
 
 void loadConfig() {
+  deserializeJson(config, kDefaultConfig);
+
   Preferences preferences;
   if (!preferences.begin(kNamespace, true)) {
     return;
@@ -112,9 +97,9 @@ void loadConfig() {
 
   JsonDocument document;
   if (deserializeJson(document, serialized) == DeserializationError::Ok) {
-    Config loaded;
+    JsonDocument loaded;
     if (parseConfig(document.as<JsonVariantConst>(), loaded)) {
-      config = loaded;
+      config.set(loaded);
     }
   }
 }
@@ -146,7 +131,7 @@ void handleLine(const char *line) {
   }
 
   if (strcmp(operation, "set") == 0) {
-    Config candidate = config;
+    JsonDocument candidate;
     if (request.containsKey("config")) {
       if (request.containsKey("field") || request.containsKey("value") ||
           !parseConfig(request["config"].as<JsonVariantConst>(), candidate)) {
@@ -155,7 +140,7 @@ void handleLine(const char *line) {
       }
     } else {
       const char *field = request["field"];
-      if (!request.containsKey("value") ||
+      if (!request.containsKey("value") || !candidate.set(config) ||
           !setField(candidate, field, request["value"].as<JsonVariantConst>())) {
         sendError("invalid_field_or_value");
         return;
@@ -166,7 +151,7 @@ void handleLine(const char *line) {
       sendError("storage_error");
       return;
     }
-    config = candidate;
+    config.set(candidate);
     sendSuccess();
     return;
   }
@@ -176,15 +161,14 @@ void handleLine(const char *line) {
     response["ok"] = true;
     if (request.containsKey("field")) {
       const char *field = request["field"];
-      int32_t value;
-      if (!getField(config, field, value)) {
+      if (findField(field) == nullptr) {
         sendError("unknown_field");
         return;
       }
       response["field"] = field;
-      response["value"] = value;
+      response["value"].set(config[field]);
     } else {
-      addConfig(response.createNestedObject("config"), config);
+      response["config"].set(config);
     }
     serializeJson(response, Serial);
     Serial.println();
@@ -196,12 +180,12 @@ void handleLine(const char *line) {
 
 }  // namespace
 
-void setup() {
+void protocolBegin() {
   Serial.begin(kBaudRate);
   loadConfig();
 }
 
-void loop() {
+void protocolPoll() {
   while (Serial.available() > 0) {
     const char character = static_cast<char>(Serial.read());
     if (character == '\n') {
@@ -222,4 +206,3 @@ void loop() {
     }
   }
 }
-

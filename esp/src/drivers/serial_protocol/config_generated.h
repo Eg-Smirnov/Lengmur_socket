@@ -1,4 +1,4 @@
-// Generated from ../config.json by tools/generate_config.py. Do not edit.
+// Generated from config.json by tools/generate_config.py. Do not edit.
 #pragma once
 
 #include <stddef.h>

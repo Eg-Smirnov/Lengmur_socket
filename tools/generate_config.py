@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "config.json"
-OUTPUT = ROOT / "esp" / "config_generated.h"
+OUTPUT = ROOT / "esp" / "src" / "drivers" / "serial_protocol" / "config_generated.h"
 TYPES = {"int32": "Int32", "bool": "Bool", "string": "String"}
 
 
@@ -36,7 +36,7 @@ def main() -> None:
 
     default_json = json.dumps(defaults, ensure_ascii=True, separators=(",", ":"))
     content = (
-        "// Generated from ../config.json by tools/generate_config.py. Do not edit.\n"
+        "// Generated from config.json by tools/generate_config.py. Do not edit.\n"
         "#pragma once\n\n#include <stddef.h>\n\n"
         "enum class FieldType { Int32, Bool, String };\n"
         "struct FieldDefinition { const char *name; FieldType type; };\n\n"
