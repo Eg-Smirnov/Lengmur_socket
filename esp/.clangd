@@ -1,0 +1,13 @@
+CompileFlags:
+  Add:
+    - -isystemC:/Users/Egor/AppData/Local/Arduino15/internal/esp32_esp-x32_2601_7eec6aba10bf540e/xtensa-esp-elf/include
+  Remove:
+    - -mlongcalls
+    - -mdisable-hardware-atomics
+    - -mfix-esp32-psram-cache-issue
+    - -mfix-esp32-psram-cache-strategy=*
+    - -fstrict-volatile-bitfields
+    - -fno-tree-switch-conversion
+
+Diagnostics:
+  Suppress: '*'
