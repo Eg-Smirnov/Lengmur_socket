@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-#include "../../../drivers/pins.h"
+#include "../pins.h"
 
 namespace adg5408 {
 

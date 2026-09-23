@@ -2,7 +2,7 @@
 
 #include <esp_timer.h>
 
-#include "../../../drivers/pins.h"
+#include "../pins.h"
 
 namespace ad7322 {
 namespace {
