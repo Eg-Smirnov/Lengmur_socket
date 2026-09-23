@@ -8,8 +8,8 @@ namespace ad7322 {
 struct SamplePair {
   int16_t voltage;
   int16_t current;
-  // Approximate time of the two CS falling edges, in microseconds.
-  uint64_t timestamp_us;
+  // Optional timestamp placeholder, currently disabled:
+  // uint64_t timestamp_us;
 };
 
 // Owns both SPI controllers. Call only from one acquisition task; not ISR-safe.

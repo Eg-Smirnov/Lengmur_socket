@@ -1,6 +1,7 @@
 #include "ad7322_pair.h"
 
-#include <esp_timer.h>
+// Optional timestamp support, currently disabled:
+// #include <esp_timer.h>
 
 #include "../pins.h"
 
@@ -80,10 +81,12 @@ bool Pair::read(SamplePair &sample) {
   voltage_spi_.beginTransaction(kSpiSettings);
   current_spi_.beginTransaction(kSpiSettings);
 
-  const uint64_t before_us = static_cast<uint64_t>(esp_timer_get_time());
+  // Optional timestamp measurement, currently disabled to keep SamplePair
+  // minimal and avoid extra work between the two CS falling edges:
+  // const uint64_t before_us = static_cast<uint64_t>(esp_timer_get_time());
   digitalWrite(pins::USPI_CS, LOW);
   digitalWrite(pins::ISPI_CS, LOW);
-  const uint64_t after_us = static_cast<uint64_t>(esp_timer_get_time());
+  // const uint64_t after_us = static_cast<uint64_t>(esp_timer_get_time());
 
   const uint16_t voltage_frame = voltage_spi_.transfer16(0);
   const uint16_t current_frame = current_spi_.transfer16(0);
@@ -98,7 +101,9 @@ bool Pair::read(SamplePair &sample) {
   if (!decode(voltage_frame, voltage) || !decode(current_frame, current)) {
     return false;
   }
-  sample = {voltage, current, (before_us + after_us) / 2};
+  sample = {voltage, current};
+  // To restore timestamps, also add timestamp_us to SamplePair and use:
+  // sample.timestamp_us = (before_us + after_us) / 2;
   return true;
 }
 
