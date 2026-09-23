@@ -44,12 +44,24 @@ CRC32 используется во всех типах кадров: отраж
 {"op":"get","field":"sample_rate"}
 {"op":"set","field":"sample_rate","value":1000}
 {"op":"set","config":{"sample_rate":1000,"min_voltage":-10,"max_voltage":10,"shunt_res":"auto"}}
+{"op":"measure_once"}
 ```
 
 Успешный ответ имеет поле `"ok":true`. Ошибка имеет вид
 `{"ok":false,"error":"код"}`. Список полей, типы и значения по умолчанию задаются в `config.json`. После его
 изменения выполните `python tools/generate_config.py` и сохраните созданный
 `esp/src/drivers/serial_protocol/config_generated.h`.
+
+Команда `measure_once` выполняет одно диагностическое чтение пары АЦП и
+возвращает сырые знаковые коды вместе с фактически выбранным шунтом:
+
+```json
+{"ok":true,"sample":{"voltage_raw":123,"current_raw":-45,"shunt_res":10000000}}
+```
+
+При настройке `shunt_res: "auto"` диагностический режим временно использует
+шунт по умолчанию 10 МОм. Пересчёт сырых кодов в физические величины пока не
+выполняется.
 
 ## Сборка
 

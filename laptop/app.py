@@ -80,7 +80,7 @@ class SerialClient:
     @staticmethod
     def _encode_frame(packet_type: int, payload: bytes) -> bytes:
         if len(payload) > 0xFFFF:
-            raise ValueError("??????? ??????? ???????? ????????")
+            raise ValueError("Слишком большой размер полезной нагрузки")
         header = MAGIC + bytes(((packet_type << 5) | PROTOCOL_VERSION,)) + struct.pack("<H", len(payload))
         body = header + payload
         return body + struct.pack("<I", zlib.crc32(body))
@@ -93,7 +93,7 @@ class SerialClient:
             if chunk:
                 result.extend(chunk)
         if len(result) != size:
-            raise TimeoutError("ESP32 ?? ???????? ?? ?????????? ?????")
+            raise TimeoutError("ESP32 не передала кадр полностью")
         return bytes(result)
 
     def _read_frame(self, deadline: float) -> tuple[int, bytes]:
@@ -109,22 +109,24 @@ class SerialClient:
         header_tail = self._read_exactly(3, deadline)
         type_and_version, payload_size = struct.unpack("<BH", header_tail)
         if (type_and_version & 0x1F) != PROTOCOL_VERSION:
-            raise RuntimeError("???????????????? ?????? ????????? ESP32")
+            raise RuntimeError("Неподдерживаемая версия протокола ESP32")
         if payload_size > MAX_PAYLOAD_BYTES:
-            raise RuntimeError("ESP32 ???????? ??????? ??????? ?????")
+            raise RuntimeError("ESP32 объявила слишком большой кадр")
         payload = self._read_exactly(payload_size, deadline)
         received_crc = struct.unpack("<I", self._read_exactly(4, deadline))[0]
         if zlib.crc32(MAGIC + header_tail + payload) != received_crc:
-            raise RuntimeError("?????? CRC ?????? ?? ESP32")
+            raise RuntimeError("Ошибка CRC кадра от ESP32")
         return type_and_version >> 5, payload
 
     def request(self, payload: dict[str, Any]) -> dict[str, Any]:
         encoded = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
         if len(encoded) > MAX_PAYLOAD_BYTES:
-            raise ValueError(f"?????? ???????? {len(encoded)} ????, ????? ? {MAX_PAYLOAD_BYTES}")
+            raise ValueError(
+                f"Запрос занимает {len(encoded)} байт, предел — {MAX_PAYLOAD_BYTES}"
+            )
         with self._lock:
             if not self.connected:
-                raise RuntimeError("??? ?????????? ? ESP32")
+                raise RuntimeError("Нет соединения с ESP32")
             self._port.write(self._encode_frame(PACKET_COMMAND, encoded))
             self._port.flush()
             deadline = time.monotonic() + REQUEST_TIMEOUT
@@ -137,10 +139,10 @@ class SerialClient:
                 if packet_type == PACKET_RESPONSE and isinstance(response, dict):
                     if not response.get("ok", False):
                         raise RuntimeError(
-                            f"ESP32 ??????? ??????: {response.get('error', 'unknown_error')}"
+                            f"ESP32 вернула ошибку: {response.get('error', 'unknown_error')}"
                         )
                     return response
-            raise TimeoutError("ESP32 ?? ???????? ?? ?????????? ?????")
+            raise TimeoutError("ESP32 не ответила за отведённое время")
 
 
 
@@ -157,6 +159,9 @@ class Application(tk.Tk):
         self.busy = False
         self.port_var = tk.StringVar()
         self.status_var = tk.StringVar(value="Не подключено")
+        self.voltage_raw_var = tk.StringVar(value="—")
+        self.current_raw_var = tk.StringVar(value="—")
+        self.shunt_res_var = tk.StringVar(value="—")
         self._build_ui()
         self.refresh_ports()
         self.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -174,12 +179,40 @@ class Application(tk.Tk):
         self.connect_button.pack(side=tk.LEFT, padx=(6, 0))
 
         self.notebook = ttk.Notebook(self)
-        self.main_tab = ttk.Frame(self.notebook)
+        self.main_tab = ttk.Frame(self.notebook, padding=14)
         self.settings_tab = ttk.Frame(self.notebook, padding=14)
         self.notebook.add(self.main_tab, text="Главная")
         self.notebook.add(self.settings_tab, text="Настройки")
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=6)
         self.notebook.bind("<<NotebookTabChanged>>", self.on_tab_changed)
+
+        measurement = ttk.LabelFrame(
+            self.main_tab, text="Однократное измерение", padding=12
+        )
+        measurement.pack(fill=tk.X)
+        ttk.Label(measurement, text="Код напряжения:").grid(
+            row=0, column=0, sticky=tk.W, pady=3
+        )
+        ttk.Label(measurement, textvariable=self.voltage_raw_var).grid(
+            row=0, column=1, sticky=tk.E, pady=3
+        )
+        ttk.Label(measurement, text="Код тока:").grid(
+            row=1, column=0, sticky=tk.W, pady=3
+        )
+        ttk.Label(measurement, textvariable=self.current_raw_var).grid(
+            row=1, column=1, sticky=tk.E, pady=3
+        )
+        ttk.Label(measurement, text="Фактический шунт, Ом:").grid(
+            row=2, column=0, sticky=tk.W, pady=3
+        )
+        ttk.Label(measurement, textvariable=self.shunt_res_var).grid(
+            row=2, column=1, sticky=tk.E, pady=3
+        )
+        measurement.columnconfigure(1, weight=1)
+        self.measure_button = ttk.Button(
+            self.main_tab, text="Измерить", command=self.measure_once
+        )
+        self.measure_button.pack(anchor=tk.E, pady=(12, 0))
 
         form = ttk.Frame(self.settings_tab)
         form.pack(fill=tk.BOTH, expand=True)
@@ -268,6 +301,25 @@ class Application(tk.Tk):
 
         self._run_background("Чтение настроек…", read, loaded)
 
+    def measure_once(self) -> None:
+        def read() -> dict[str, Any]:
+            response = self.client.request({"op": "measure_once"})
+            sample = response.get("sample")
+            if not isinstance(sample, dict):
+                raise RuntimeError("В ответе ESP32 отсутствует объект sample")
+            for field in ("voltage_raw", "current_raw", "shunt_res"):
+                if not isinstance(sample.get(field), int):
+                    raise RuntimeError(f"В результате измерения отсутствует поле {field}")
+            return sample
+
+        def measured(sample: dict[str, Any]) -> None:
+            self.voltage_raw_var.set(str(sample["voltage_raw"]))
+            self.current_raw_var.set(str(sample["current_raw"]))
+            self.shunt_res_var.set(str(sample["shunt_res"]))
+            self.status_var.set("Однократное измерение выполнено")
+
+        self._run_background("Выполнение измерения…", read, measured)
+
     def _collect_config(self) -> dict[str, Any]:
         config: dict[str, Any] = {}
         for name, definition in self.schema.items():
@@ -345,6 +397,7 @@ class Application(tk.Tk):
     def _set_actions_enabled(self, enabled: bool) -> None:
         state = tk.NORMAL if enabled else tk.DISABLED
         self.connect_button.configure(state=state)
+        self.measure_button.configure(state=state)
         self.reload_button.configure(state=state)
         self.save_button.configure(state=state)
 

@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "../../acquisition/acquisition.h"
 #include "config_generated.h"
 
 namespace {
@@ -210,6 +211,21 @@ void handleCommand(const uint8_t *payload, size_t payloadSize) {
     } else {
       response["config"].set(config);
     }
+    sendJson(kTypeResponse, response);
+    return;
+  }
+
+  if (strcmp(operation, "measure_once") == 0) {
+    AcquisitionSample sample{};
+    if (!acquisitionMeasureOnce(sample)) {
+      sendError("measurement_failed");
+      return;
+    }
+    JsonDocument response;
+    response["ok"] = true;
+    response["sample"]["voltage_raw"] = sample.voltage_raw;
+    response["sample"]["current_raw"] = sample.current_raw;
+    response["sample"]["shunt_res"] = sample.shunt_res;
     sendJson(kTypeResponse, response);
     return;
   }
