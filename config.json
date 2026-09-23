@@ -1,8 +1,8 @@
 {
   "fields": {
-    "setting_1": { "type": "int32", "default": 0 },
-    "setting_2": { "type": "int32", "default": 0 },
-    "setting_3": { "type": "int32", "default": 0 },
-    "setting_str": { "type": "string", "default": "aboab"}
+    "sample_rate": { "type": "int32", "default": 1000 },
+    "min_voltage": { "type": "int32", "default": -10 },
+    "max_voltage": { "type": "int32", "default": 10 },
+    "shunt_res": { "type": "shunt_res", "default": "auto" }
   }
 }

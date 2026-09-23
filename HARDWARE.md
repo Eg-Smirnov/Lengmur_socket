@@ -78,7 +78,7 @@
 |      **GPIO19** | `RMII_TXD0`    | Ethernet TX data 0                                                                                                        |
 |      **GPIO22** | `RMII_TXD1`    | Ethernet TX data 1                                                                                                        |
 |      **GPIO21** | `RMII_TXEN`    | Ethernet transmit enable                                                                                                  |
-|       **GPIO0** | `ESP32_IO0`    | Boot/прошивка ESP32                                                                                                       |
+|       **GPIO0** | `ESP32_IO0` / `RMII_REF_CLK` | Boot/прошивка ESP32 и вход внешнего такта RMII 50 МГц от KSZ8081                                            |
 |      **GPIO36** | SENSOR_VP      | На рассматриваемом фрагменте схемы не подключён                                                                           |
 
 ## Функциональные группы
@@ -89,6 +89,18 @@
 - Ethernet RMII: `RMII_RXD0`, `RMII_RXD1`, `RMII_CRS_DV`, `RMII_TXD0`, `RMII_TXD1`, `RMII_TXEN`, `RMII_MDIO`, `RMII_MDC`, `ETH_RST`.
 - USB UART и загрузка: `USB_UART_TXD`, `USB_UART_RXD`, `ESP32_IO0`, `ESP32_EN`.
 - Управление силовым трактом: `OUT_EN`.
+
+## Ethernet PHY KSZ8081RNACA-TR
+
+Ethernet пока не используется прошивкой; основной интерфейс связи — USB Serial. На плате KSZ8081 подключён к встроенному MAC ESP32 по RMII. PHY получает опорную частоту от кварца 25 МГц между выводами `XI` и `XO`; две остальные площадки четырёхконтактного корпуса кварца подключены к земле. Точное обозначение кварца пока не установлено.
+
+В таком включении KSZ8081RNA формирует выходной `RMII_REF_CLK` 50 МГц. Он подключён к GPIO0 ESP32 через последовательный резистор с маркировкой `33` (вероятнее всего 33 Ом, номинал нужно подтвердить по схеме или компоненту). GPIO0 также подтянут к +3,3 В резистором 20 кОм и соединён с USB-схемой автоматического входа в загрузчик.
+
+GPIO0 имеет две функции: при сбросе его уровень выбирает штатную загрузку или загрузчик ESP32, после старта он используется как вход внешнего такта RMII. Номиналы резисторов драйверу не нужны, но полезны при диагностике загрузки и целостности сигнала. Пока не подтверждено, удерживает ли `ETH_RST` PHY в сбросе и отключён ли `REF_CLK` в момент считывания загрузочного уровня GPIO0.
+
+Для будущей программной поддержки известны `ETH_RST` = GPIO5, `RMII_MDIO` = GPIO18, `RMII_MDC` = GPIO23 и фиксированные линии данных RMII из таблицы выше. Адрес PHY и режимные подтяжки ещё нужно установить по схеме.
+
+Источники: [даташит KSZ8081RNA/RND](https://ww1.microchip.com/downloads/aemDocuments/documents/UNG/ProductDocuments/DataSheets/KSZ8081RNA-RND-10BASE-T-100-BASE-TX-PHY-with-RMII-Support-DS00002199F.pdf), [рекомендации Espressif по RMII](https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32/schematic-checklist.html).
 
 ## Аналоговый тракт AD7322BRUZ
 

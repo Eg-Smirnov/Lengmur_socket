@@ -1,0 +1,25 @@
+{
+    "folders":
+    [
+        {
+            "path": ".",
+            "folder_exclude_patterns": [".git", ".build"]
+        }
+    ],
+    "settings":
+    {
+        "LSP":
+        {
+            "clangd":
+            {
+                "enabled": true,
+                "initializationOptions":
+                {
+                    "clangd.compile-commands-dir": "esp/.build",
+                    "clangd.query-driver": "C:\\Users\\Egor\\AppData\\Local\\Arduino15\\internal\\esp32_esp-x32_*/bin/xtensa-esp32-elf-*",
+                    "clangd.background-index": true
+                }
+            }
+        }
+    }
+}

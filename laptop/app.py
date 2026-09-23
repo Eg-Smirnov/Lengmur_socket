@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+import struct
 import threading
 import time
 import tkinter as tk
+import zlib
 from pathlib import Path
 from tkinter import messagebox, ttk
 from typing import Any, Callable
@@ -18,7 +20,11 @@ except ImportError:
 
 BAUD_RATE = 115200
 REQUEST_TIMEOUT = 2.0
-MAX_REQUEST_BYTES = 511
+MAGIC = b"LS"
+PROTOCOL_VERSION = 1
+PACKET_COMMAND = 0
+PACKET_RESPONSE = 1
+MAX_PAYLOAD_BYTES = 2048
 INT32_MIN = -(2**31)
 INT32_MAX = 2**31 - 1
 
@@ -33,7 +39,7 @@ def load_schema() -> dict[str, dict[str, Any]]:
     for name, definition in fields.items():
         if not isinstance(name, str) or not isinstance(definition, dict):
             raise ValueError("Некорректное описание поля в config.json")
-        if definition.get("type") not in {"int32", "bool", "string"}:
+        if definition.get("type") not in {"int32", "bool", "string", "shunt_res"}:
             raise ValueError(f"Поле {name}: неподдерживаемый тип")
         if "default" not in definition:
             raise ValueError(f"Поле {name}: отсутствует значение default")
@@ -71,33 +77,72 @@ class SerialClient:
             finally:
                 self._port = None
 
+    @staticmethod
+    def _encode_frame(packet_type: int, payload: bytes) -> bytes:
+        if len(payload) > 0xFFFF:
+            raise ValueError("??????? ??????? ???????? ????????")
+        header = MAGIC + bytes(((packet_type << 5) | PROTOCOL_VERSION,)) + struct.pack("<H", len(payload))
+        body = header + payload
+        return body + struct.pack("<I", zlib.crc32(body))
+
+    def _read_exactly(self, size: int, deadline: float) -> bytes:
+        result = bytearray()
+        while len(result) < size and time.monotonic() < deadline:
+            self._port.timeout = max(0.05, deadline - time.monotonic())
+            chunk = self._port.read(size - len(result))
+            if chunk:
+                result.extend(chunk)
+        if len(result) != size:
+            raise TimeoutError("ESP32 ?? ???????? ?? ?????????? ?????")
+        return bytes(result)
+
+    def _read_frame(self, deadline: float) -> tuple[int, bytes]:
+        matched = 0
+        while time.monotonic() < deadline:
+            byte = self._read_exactly(1, deadline)[0]
+            if byte == MAGIC[matched]:
+                matched += 1
+                if matched == len(MAGIC):
+                    break
+            else:
+                matched = 1 if byte == MAGIC[0] else 0
+        header_tail = self._read_exactly(3, deadline)
+        type_and_version, payload_size = struct.unpack("<BH", header_tail)
+        if (type_and_version & 0x1F) != PROTOCOL_VERSION:
+            raise RuntimeError("???????????????? ?????? ????????? ESP32")
+        if payload_size > MAX_PAYLOAD_BYTES:
+            raise RuntimeError("ESP32 ???????? ??????? ??????? ?????")
+        payload = self._read_exactly(payload_size, deadline)
+        received_crc = struct.unpack("<I", self._read_exactly(4, deadline))[0]
+        if zlib.crc32(MAGIC + header_tail + payload) != received_crc:
+            raise RuntimeError("?????? CRC ?????? ?? ESP32")
+        return type_and_version >> 5, payload
+
     def request(self, payload: dict[str, Any]) -> dict[str, Any]:
         encoded = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
-        if len(encoded) > MAX_REQUEST_BYTES:
-            raise ValueError(
-                f"Запрос занимает {len(encoded)} байт, лимит протокола — {MAX_REQUEST_BYTES}"
-            )
+        if len(encoded) > MAX_PAYLOAD_BYTES:
+            raise ValueError(f"?????? ???????? {len(encoded)} ????, ????? ? {MAX_PAYLOAD_BYTES}")
         with self._lock:
             if not self.connected:
-                raise RuntimeError("Нет соединения с ESP32")
-            self._port.reset_input_buffer()
-            self._port.write(encoded + b"\n")
+                raise RuntimeError("??? ?????????? ? ESP32")
+            self._port.write(self._encode_frame(PACKET_COMMAND, encoded))
             self._port.flush()
             deadline = time.monotonic() + REQUEST_TIMEOUT
             while time.monotonic() < deadline:
-                self._port.timeout = max(0.05, deadline - time.monotonic())
-                line = self._port.readline()
-                if not line:
-                    break
+                packet_type, packet_payload = self._read_frame(deadline)
                 try:
-                    response = json.loads(line.decode("utf-8"))
+                    response = json.loads(packet_payload.decode("utf-8"))
                 except (UnicodeDecodeError, json.JSONDecodeError):
                     continue
-                if isinstance(response, dict):
+                if packet_type == PACKET_RESPONSE and isinstance(response, dict):
                     if not response.get("ok", False):
-                        raise RuntimeError(f"ESP32 вернула ошибку: {response.get('error', 'unknown_error')}")
+                        raise RuntimeError(
+                            f"ESP32 ??????? ??????: {response.get('error', 'unknown_error')}"
+                        )
                     return response
-            raise TimeoutError("ESP32 не ответила за отведённое время")
+            raise TimeoutError("ESP32 ?? ???????? ?? ?????????? ?????")
+
+
 
 
 class Application(tk.Tk):
@@ -143,6 +188,14 @@ class Application(tk.Tk):
             if definition["type"] == "bool":
                 variable: tk.Variable = tk.BooleanVar(value=definition["default"])
                 widget = ttk.Checkbutton(form, variable=variable)
+            elif definition["type"] == "shunt_res":
+                variable = tk.StringVar(value=str(definition["default"]))
+                widget = ttk.Combobox(
+                    form,
+                    textvariable=variable,
+                    values=("auto", "200", "1000", "10000", "100000", "1000000", "10000000"),
+                    state="readonly",
+                )
             else:
                 variable = tk.StringVar(value=str(definition["default"]))
                 widget = ttk.Entry(form, textvariable=variable)
@@ -228,6 +281,10 @@ class Application(tk.Tk):
                     raise ValueError(f"Поле {name} должно находиться в диапазоне int32")
             elif definition["type"] == "string":
                 value = str(value)
+            elif definition["type"] == "shunt_res":
+                value = str(value)
+                if value != "auto":
+                    value = int(value)
             else:
                 value = bool(value)
             config[name] = value
