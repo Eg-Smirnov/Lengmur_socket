@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-// ESP32-WROOM-32 GPIO assignments from HARDWARE.md.
+// ESP32-WROOM-32 GPIO assignments from docs/hardware/pinout.md.
 // Keep peripheral drivers dependent on these names instead of raw pin numbers.
 // GPIO0, GPIO2, GPIO5, GPIO12 and GPIO15 are strapping pins; peripheral
 // circuitry must not drive them to an invalid level while the ESP32 resets.
