@@ -195,6 +195,10 @@ void handleCommand(const uint8_t *payload, size_t payloadSize) {
     }
     if (!saveConfig(candidate)) { sendError("storage_error"); return; }
     config.set(candidate);
+    if (!acquisitionApplyConfig()) {
+      sendError("configuration_apply_error");
+      return;
+    }
     JsonDocument response;
     response["ok"] = true;
     sendJson(kTypeResponse, response);
