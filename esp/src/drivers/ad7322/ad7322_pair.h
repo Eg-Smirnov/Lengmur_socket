@@ -12,22 +12,33 @@ struct SamplePair {
   // uint64_t timestamp_us;
 };
 
-// Owns both SPI controllers. Call only from one acquisition task; not ISR-safe.
+/** Controls the voltage and current AD7322 converters as a synchronized pair. */
 class Pair {
  public:
+  /** Constructs an uninitialized ADC pair. */
   Pair();
 
-  // Configures both ADCs for VIN0 - VIN1, +/-10 V, internal reference,
-  // two's-complement output and normal power mode. Discards initial data.
+  /** Initializes and configures both ADCs. */
   void begin();
+
+  /** Releases the SPI controllers used by both ADCs. */
   void end();
 
-  // Starts both conversions before clocking either ADC. Returns false if an
-  // ADC reports an unexpected leading/channel bit or begin() was not called.
+  /**
+   * Reads one raw sample from each ADC into `sample`.
+   * Returns `true` if the pair is initialized and both ADC frames are valid.
+   */
   bool read(SamplePair &sample);
 
  private:
+  /** Exchanges one frame with an ADC over the specified SPI bus. */
   uint16_t transfer(SPIClass &spi, uint8_t cs_pin, uint16_t command);
+
+  /**
+   * Sign-extends the 13-bit ADC code into the 16-bit integer `value`.
+   * Does not convert the code to volts or amperes.
+   * Returns `true` if the frame identifies the expected input channel.
+   */
   static bool decode(uint16_t frame, int16_t &value);
 
   SPIClass voltage_spi_;

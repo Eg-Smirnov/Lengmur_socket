@@ -4,7 +4,7 @@
 
 namespace adg5408 {
 
-// Nominal resistor values; actual measurement scaling requires calibration.
+/** Selects a nominal shunt resistance through the ADG5408 multiplexer. */
 class ShuntSelector {
  public:
   static constexpr uint32_t k200Ohm = 200;
@@ -14,18 +14,26 @@ class ShuntSelector {
   static constexpr uint32_t k1MOhm = 1000000;
   static constexpr uint32_t k10MOhm = 10000000;
 
-  // Select S6 (10 MOhm) as soon as the ESP32 can control the address pins.
+  /** Initializes the address pins and selects the default 10 MOhm shunt. */
   void begin();
 
-  // Accepts only the six nominal values above. Invalid values leave GPIOs
-  // unchanged and return false. Must not be called concurrently or from ISR.
+  /**
+   * Selects the nominal shunt resistance specified by `ohms`.
+   * Returns `true` if the selector is initialized and the value is supported.
+   */
   bool selectOhms(uint32_t ohms);
 
+  /** Returns the currently selected nominal resistance in ohms. */
   uint32_t selectedOhms() const { return selected_ohms_; }
+
+  /** Reports whether the selector has been initialized. */
   bool initialized() const { return initialized_; }
 
  private:
+  /** Maps a supported resistance to an ADG5408 channel address. */
   static bool addressForOhms(uint32_t ohms, uint8_t &address);
+
+  /** Sets the ADG5408 address pins to the specified channel address. */
   void writeAddress(uint8_t address);
 
   uint32_t selected_ohms_ = 0;
