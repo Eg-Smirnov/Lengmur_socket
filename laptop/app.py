@@ -162,6 +162,7 @@ class Application(tk.Tk):
         self.voltage_raw_var = tk.StringVar(value="—")
         self.current_raw_var = tk.StringVar(value="—")
         self.shunt_res_var = tk.StringVar(value="—")
+        self.out_enabled = False
         self._build_ui()
         self.refresh_ports()
         self.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -214,6 +215,15 @@ class Application(tk.Tk):
         )
         self.measure_button.pack(anchor=tk.E, pady=(12, 0))
 
+        output = ttk.LabelFrame(self.main_tab, text="Силовой выход", padding=12)
+        output.pack(fill=tk.X, pady=(14, 0))
+        self.output_state_var = tk.StringVar(value="OUT_EN: неизвестно")
+        ttk.Label(output, textvariable=self.output_state_var).pack(side=tk.LEFT)
+        self.output_button = ttk.Button(
+            output, text="Включить", command=self.toggle_output, state=tk.DISABLED
+        )
+        self.output_button.pack(side=tk.RIGHT)
+
         form = ttk.Frame(self.settings_tab)
         form.pack(fill=tk.BOTH, expand=True)
         for row, (name, definition) in enumerate(self.schema.items()):
@@ -263,6 +273,9 @@ class Application(tk.Tk):
         if self.client.connected:
             self.client.close()
             self.connect_button.configure(text="Подключить")
+            self.out_enabled = False
+            self.output_state_var.set("OUT_EN: неизвестно")
+            self.output_button.configure(text="Включить", state=tk.DISABLED)
             self.status_var.set("Не подключено")
             return
         port_name = self.port_var.get()
@@ -273,8 +286,9 @@ class Application(tk.Tk):
         def connected(_: None) -> None:
             self.connect_button.configure(text="Отключить")
             self.status_var.set(f"Подключено: {port_name}")
-            if self.notebook.select() == str(self.settings_tab):
-                self.load_settings()
+            self.load_output_state(
+                load_settings_after=self.notebook.select() == str(self.settings_tab)
+            )
 
         self._run_background(
             "Подключение…", lambda: self.client.connect(port_name), connected
@@ -319,6 +333,34 @@ class Application(tk.Tk):
             self.status_var.set("Однократное измерение выполнено")
 
         self._run_background("Выполнение измерения…", read, measured)
+
+    def load_output_state(self, load_settings_after: bool = False) -> None:
+        def loaded(response: dict[str, Any]) -> None:
+            self._output_state_received(response)
+            if load_settings_after:
+                self.load_settings()
+
+        self._run_background(
+            "Чтение состояния OUT_EN…",
+            lambda: self.client.request({"op": "get_out_state"}),
+            loaded,
+        )
+
+    def toggle_output(self) -> None:
+        self._run_background(
+            "Переключение OUT_EN…",
+            lambda: self.client.request({"op": "toggle_out"}),
+            self._output_state_received,
+        )
+
+    def _output_state_received(self, response: dict[str, Any]) -> None:
+        enabled = response.get("out_enabled")
+        if not isinstance(enabled, bool):
+            raise RuntimeError("В ответе ESP32 отсутствует поле out_enabled")
+        self.out_enabled = enabled
+        self.output_state_var.set(f"OUT_EN: {'HIGH' if enabled else 'LOW'}")
+        self.output_button.configure(text="Выключить" if enabled else "Включить")
+        self.status_var.set(f"OUT_EN установлен в {'HIGH' if enabled else 'LOW'}")
 
     def _collect_config(self) -> dict[str, Any]:
         config: dict[str, Any] = {}
@@ -398,6 +440,9 @@ class Application(tk.Tk):
         state = tk.NORMAL if enabled else tk.DISABLED
         self.connect_button.configure(state=state)
         self.measure_button.configure(state=state)
+        self.output_button.configure(
+            state=tk.NORMAL if enabled and self.client.connected else tk.DISABLED
+        )
         self.reload_button.configure(state=state)
         self.save_button.configure(state=state)
 

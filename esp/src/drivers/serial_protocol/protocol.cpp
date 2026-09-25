@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "../../acquisition/acquisition.h"
+#include "../output_control/output_control.h"
 #include "config_generated.h"
 
 namespace {
@@ -226,6 +227,18 @@ void handleCommand(const uint8_t *payload, size_t payloadSize) {
     response["sample"]["voltage_raw"] = sample.voltage_raw;
     response["sample"]["current_raw"] = sample.current_raw;
     response["sample"]["shunt_res"] = sample.shunt_res;
+    sendJson(kTypeResponse, response);
+    return;
+  }
+
+  if (strcmp(operation, "get_out_state") == 0 ||
+      strcmp(operation, "toggle_out") == 0) {
+    const bool enabled = strcmp(operation, "toggle_out") == 0
+                             ? outputControlToggle()
+                             : outputControlIsEnabled();
+    JsonDocument response;
+    response["ok"] = true;
+    response["out_enabled"] = enabled;
     sendJson(kTypeResponse, response);
     return;
   }
