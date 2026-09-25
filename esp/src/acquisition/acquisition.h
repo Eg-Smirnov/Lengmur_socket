@@ -9,4 +9,5 @@ struct AcquisitionSample {
 };
 
 void acquisitionBegin();
+bool acquisitionApplyConfig();
 bool acquisitionMeasureOnce(AcquisitionSample &sample);
