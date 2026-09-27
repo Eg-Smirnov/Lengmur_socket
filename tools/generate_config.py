@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "config.json"
-OUTPUT = ROOT / "esp" / "src" / "drivers" / "serial_protocol" / "config_generated.h"
+OUTPUT = ROOT / "esp" / "src" / "application" / "configuration" / "config_generated.h"
 TYPES = {"int32": "Int32", "bool": "Bool", "string": "String", "shunt_res": "ShuntResistance"}
 
 

@@ -24,7 +24,8 @@ MAGIC = b"LS"
 PROTOCOL_VERSION = 1
 PACKET_COMMAND = 0
 PACKET_RESPONSE = 1
-MAX_PAYLOAD_BYTES = 2048
+MAX_FRAME_PAYLOAD_BYTES = 2048
+MAX_JSON_PAYLOAD_BYTES = 256
 INT32_MIN = -(2**31)
 INT32_MAX = 2**31 - 1
 
@@ -110,7 +111,7 @@ class SerialClient:
         type_and_version, payload_size = struct.unpack("<BH", header_tail)
         if (type_and_version & 0x1F) != PROTOCOL_VERSION:
             raise RuntimeError("Неподдерживаемая версия протокола ESP32")
-        if payload_size > MAX_PAYLOAD_BYTES:
+        if payload_size > MAX_FRAME_PAYLOAD_BYTES:
             raise RuntimeError("ESP32 объявила слишком большой кадр")
         payload = self._read_exactly(payload_size, deadline)
         received_crc = struct.unpack("<I", self._read_exactly(4, deadline))[0]
@@ -120,9 +121,9 @@ class SerialClient:
 
     def request(self, payload: dict[str, Any]) -> dict[str, Any]:
         encoded = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
-        if len(encoded) > MAX_PAYLOAD_BYTES:
+        if len(encoded) > MAX_JSON_PAYLOAD_BYTES:
             raise ValueError(
-                f"Запрос занимает {len(encoded)} байт, предел — {MAX_PAYLOAD_BYTES}"
+                f"Запрос занимает {len(encoded)} байт, предел — {MAX_JSON_PAYLOAD_BYTES}"
             )
         with self._lock:
             if not self.connected:
@@ -159,10 +160,6 @@ class Application(tk.Tk):
         self.busy = False
         self.port_var = tk.StringVar()
         self.status_var = tk.StringVar(value="Не подключено")
-        self.voltage_raw_var = tk.StringVar(value="—")
-        self.current_raw_var = tk.StringVar(value="—")
-        self.shunt_res_var = tk.StringVar(value="—")
-        self.out_enabled = False
         self._build_ui()
         self.refresh_ports()
         self.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -180,49 +177,10 @@ class Application(tk.Tk):
         self.connect_button.pack(side=tk.LEFT, padx=(6, 0))
 
         self.notebook = ttk.Notebook(self)
-        self.main_tab = ttk.Frame(self.notebook, padding=14)
         self.settings_tab = ttk.Frame(self.notebook, padding=14)
-        self.notebook.add(self.main_tab, text="Главная")
         self.notebook.add(self.settings_tab, text="Настройки")
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=6)
         self.notebook.bind("<<NotebookTabChanged>>", self.on_tab_changed)
-
-        measurement = ttk.LabelFrame(
-            self.main_tab, text="Однократное измерение", padding=12
-        )
-        measurement.pack(fill=tk.X)
-        ttk.Label(measurement, text="Код напряжения:").grid(
-            row=0, column=0, sticky=tk.W, pady=3
-        )
-        ttk.Label(measurement, textvariable=self.voltage_raw_var).grid(
-            row=0, column=1, sticky=tk.E, pady=3
-        )
-        ttk.Label(measurement, text="Код тока:").grid(
-            row=1, column=0, sticky=tk.W, pady=3
-        )
-        ttk.Label(measurement, textvariable=self.current_raw_var).grid(
-            row=1, column=1, sticky=tk.E, pady=3
-        )
-        ttk.Label(measurement, text="Фактический шунт, Ом:").grid(
-            row=2, column=0, sticky=tk.W, pady=3
-        )
-        ttk.Label(measurement, textvariable=self.shunt_res_var).grid(
-            row=2, column=1, sticky=tk.E, pady=3
-        )
-        measurement.columnconfigure(1, weight=1)
-        self.measure_button = ttk.Button(
-            self.main_tab, text="Измерить", command=self.measure_once
-        )
-        self.measure_button.pack(anchor=tk.E, pady=(12, 0))
-
-        output = ttk.LabelFrame(self.main_tab, text="Силовой выход", padding=12)
-        output.pack(fill=tk.X, pady=(14, 0))
-        self.output_state_var = tk.StringVar(value="OUT_EN: неизвестно")
-        ttk.Label(output, textvariable=self.output_state_var).pack(side=tk.LEFT)
-        self.output_button = ttk.Button(
-            output, text="Включить", command=self.toggle_output, state=tk.DISABLED
-        )
-        self.output_button.pack(side=tk.RIGHT)
 
         form = ttk.Frame(self.settings_tab)
         form.pack(fill=tk.BOTH, expand=True)
@@ -248,9 +206,13 @@ class Application(tk.Tk):
 
         actions = ttk.Frame(self.settings_tab)
         actions.pack(fill=tk.X, pady=(12, 0))
-        self.reload_button = ttk.Button(actions, text="Перечитать", command=self.load_settings)
+        self.reload_button = ttk.Button(
+            actions, text="Перечитать", command=self.load_settings, state=tk.DISABLED
+        )
         self.reload_button.pack(side=tk.LEFT)
-        self.save_button = ttk.Button(actions, text="Записать", command=self.save_settings)
+        self.save_button = ttk.Button(
+            actions, text="Записать", command=self.save_settings, state=tk.DISABLED
+        )
         self.save_button.pack(side=tk.RIGHT)
         ttk.Label(self, textvariable=self.status_var, anchor=tk.W, padding=(10, 4, 10, 10)).pack(fill=tk.X)
 
@@ -273,10 +235,8 @@ class Application(tk.Tk):
         if self.client.connected:
             self.client.close()
             self.connect_button.configure(text="Подключить")
-            self.out_enabled = False
-            self.output_state_var.set("OUT_EN: неизвестно")
-            self.output_button.configure(text="Включить", state=tk.DISABLED)
             self.status_var.set("Не подключено")
+            self._set_actions_enabled(True)
             return
         port_name = self.port_var.get()
         if not port_name:
@@ -286,9 +246,7 @@ class Application(tk.Tk):
         def connected(_: None) -> None:
             self.connect_button.configure(text="Отключить")
             self.status_var.set(f"Подключено: {port_name}")
-            self.load_output_state(
-                load_settings_after=self.notebook.select() == str(self.settings_tab)
-            )
+            self.load_settings()
 
         self._run_background(
             "Подключение…", lambda: self.client.connect(port_name), connected
@@ -314,53 +272,6 @@ class Application(tk.Tk):
             self.status_var.set("Настройки прочитаны с ESP32")
 
         self._run_background("Чтение настроек…", read, loaded)
-
-    def measure_once(self) -> None:
-        def read() -> dict[str, Any]:
-            response = self.client.request({"op": "measure_once"})
-            sample = response.get("sample")
-            if not isinstance(sample, dict):
-                raise RuntimeError("В ответе ESP32 отсутствует объект sample")
-            for field in ("voltage_raw", "current_raw", "shunt_res"):
-                if not isinstance(sample.get(field), int):
-                    raise RuntimeError(f"В результате измерения отсутствует поле {field}")
-            return sample
-
-        def measured(sample: dict[str, Any]) -> None:
-            self.voltage_raw_var.set(str(sample["voltage_raw"]))
-            self.current_raw_var.set(str(sample["current_raw"]))
-            self.shunt_res_var.set(str(sample["shunt_res"]))
-            self.status_var.set("Однократное измерение выполнено")
-
-        self._run_background("Выполнение измерения…", read, measured)
-
-    def load_output_state(self, load_settings_after: bool = False) -> None:
-        def loaded(response: dict[str, Any]) -> None:
-            self._output_state_received(response)
-            if load_settings_after:
-                self.load_settings()
-
-        self._run_background(
-            "Чтение состояния OUT_EN…",
-            lambda: self.client.request({"op": "get_out_state"}),
-            loaded,
-        )
-
-    def toggle_output(self) -> None:
-        self._run_background(
-            "Переключение OUT_EN…",
-            lambda: self.client.request({"op": "toggle_out"}),
-            self._output_state_received,
-        )
-
-    def _output_state_received(self, response: dict[str, Any]) -> None:
-        enabled = response.get("out_enabled")
-        if not isinstance(enabled, bool):
-            raise RuntimeError("В ответе ESP32 отсутствует поле out_enabled")
-        self.out_enabled = enabled
-        self.output_state_var.set(f"OUT_EN: {'HIGH' if enabled else 'LOW'}")
-        self.output_button.configure(text="Выключить" if enabled else "Включить")
-        self.status_var.set(f"OUT_EN установлен в {'HIGH' if enabled else 'LOW'}")
 
     def _collect_config(self) -> dict[str, Any]:
         config: dict[str, Any] = {}
@@ -439,12 +350,11 @@ class Application(tk.Tk):
     def _set_actions_enabled(self, enabled: bool) -> None:
         state = tk.NORMAL if enabled else tk.DISABLED
         self.connect_button.configure(state=state)
-        self.measure_button.configure(state=state)
-        self.output_button.configure(
-            state=tk.NORMAL if enabled and self.client.connected else tk.DISABLED
+        settings_state = (
+            tk.NORMAL if enabled and self.client.connected else tk.DISABLED
         )
-        self.reload_button.configure(state=state)
-        self.save_button.configure(state=state)
+        self.reload_button.configure(state=settings_state)
+        self.save_button.configure(state=settings_state)
 
     def on_close(self) -> None:
         self.client.close()
