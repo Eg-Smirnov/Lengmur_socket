@@ -116,12 +116,16 @@ void testRequestTooLarge() {
 void testQueueFull() {
   FrameCodec codec;
   AppEventQueue queue;
-  for (size_t index = 0; index < AppEventQueue::kCapacity; ++index) {
+  for (size_t index = 0; index < AppEventQueue::kCapacity - 1; ++index) {
     assert(queue.push(AppCommand::StopMeasurement));
   }
   const std::vector<uint8_t> payload{'{', '}'};
   assert(feed(codec, queue, makeFrame(codec, 0, payload)) ==
          FrameCodec::ConsumeResult::QueueFull);
+  assert(queue.push(AppCommand::SendTransportResponse, payload.data(),
+                    payload.size()));
+  assert(!queue.push(AppCommand::SendTransportResponse, payload.data(),
+                     payload.size()));
 }
 
 }  // namespace

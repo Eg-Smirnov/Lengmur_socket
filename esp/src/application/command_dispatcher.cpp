@@ -2,7 +2,7 @@
 
 #include <string.h>
 
-#include "../acquisition/acquisition.h"
+#include "../acquisition/acquisition_task.h"
 #include "../transport/transport.h"
 #include "app_event_queue.h"
 #include "configuration/configuration_store.h"
@@ -81,6 +81,11 @@ void CommandDispatcher::processGet(JsonObjectConst request,
 
 void CommandDispatcher::processSet(JsonObjectConst request,
                                    AppEventQueue &event_queue) {
+  if (transaction_.active()) {
+    enqueueError("queue_full", event_queue);
+    return;
+  }
+
   JsonDocument candidate;
   const char *validation_error = nullptr;
   if (!configuration_.buildCandidate(request, candidate, validation_error)) {
@@ -88,30 +93,91 @@ void CommandDispatcher::processSet(JsonObjectConst request,
     return;
   }
 
-  AcquisitionConfig old_configuration{};
   AcquisitionConfig new_configuration{};
-  if (!configuration_.getAcquisitionConfig(configuration_.current(),
-                                           old_configuration) ||
-      !configuration_.getAcquisitionConfig(candidate, new_configuration)) {
+  if (!configuration_.getAcquisitionConfig(candidate, new_configuration)) {
     enqueueError("invalid_config", event_queue);
     return;
   }
 
-  if (!acquisitionApplyConfig(new_configuration)) {
-    acquisitionApplyConfig(old_configuration);
-    enqueueError("configuration_apply_error", event_queue);
-    return;
+  uint32_t transaction_id = next_transaction_id_++;
+  if (transaction_id == 0) {
+    transaction_id = next_transaction_id_++;
   }
-  if (!configuration_.save(candidate)) {
-    acquisitionApplyConfig(old_configuration);
-    enqueueError("storage_error", event_queue);
+  if (!pending_candidate_.set(candidate) || pending_candidate_.overflowed() ||
+      !transaction_.begin(transaction_id)) {
+    clearPendingCandidate();
+    enqueueError("invalid_config", event_queue);
     return;
   }
 
-  configuration_.publish(candidate);
-  JsonDocument response;
-  response["ok"] = true;
-  enqueueResponse(response, event_queue);
+  const AcquisitionCommand command{AcquisitionCommandType::PrepareConfig,
+                                   transaction_id, new_configuration};
+  if (!acquisition_.send(command)) {
+    transaction_.reject(transaction_id);
+    clearPendingCandidate();
+    enqueueError("queue_full", event_queue);
+  }
+}
+
+void CommandDispatcher::processPendingAcquisition() {
+  AcquisitionCommandType type;
+  switch (transaction_.state()) {
+    case ConfigurationTransaction::State::NeedCommit:
+      type = AcquisitionCommandType::CommitConfig;
+      break;
+    case ConfigurationTransaction::State::NeedRollback:
+      type = AcquisitionCommandType::RollbackConfig;
+      break;
+    default:
+      return;
+  }
+
+  const AcquisitionCommand command{type, transaction_.transactionId(), {}};
+  if (acquisition_.send(command)) {
+    transaction_.decisionSent();
+  }
+}
+
+void CommandDispatcher::processAcquisitionResult(
+    const AcquisitionResult &result, AppEventQueue &event_queue) {
+  switch (result.type) {
+    case AcquisitionResultType::ConfigPrepared: {
+      if (transaction_.state() !=
+              ConfigurationTransaction::State::AwaitingPrepare ||
+          result.transaction_id != transaction_.transactionId()) {
+        return;
+      }
+      const bool saved = configuration_.save(pending_candidate_);
+      transaction_.prepared(result.transaction_id, saved);
+      break;
+    }
+    case AcquisitionResultType::ConfigRejected:
+      if (transaction_.reject(result.transaction_id)) {
+        clearPendingCandidate();
+        enqueueError("configuration_apply_error", event_queue);
+      }
+      break;
+    case AcquisitionResultType::ConfigCommitted:
+      if (transaction_.finish(
+              result.transaction_id,
+              ConfigurationTransaction::State::AwaitingCommit)) {
+        configuration_.publish(pending_candidate_);
+        clearPendingCandidate();
+        enqueueSuccess(event_queue);
+      }
+      break;
+    case AcquisitionResultType::ConfigRolledBack:
+    case AcquisitionResultType::ConfigRollbackFailed:
+      if (transaction_.finish(
+              result.transaction_id,
+              ConfigurationTransaction::State::AwaitingRollback)) {
+        clearPendingCandidate();
+        enqueueError("storage_error", event_queue);
+      }
+      break;
+    default:
+      break;
+  }
 }
 
 bool CommandDispatcher::enqueueResponse(const JsonDocument &response,
@@ -135,4 +201,14 @@ bool CommandDispatcher::enqueueError(const char *error,
   response["ok"] = false;
   response["error"] = error;
   return enqueueResponse(response, event_queue);
+}
+
+bool CommandDispatcher::enqueueSuccess(AppEventQueue &event_queue) {
+  JsonDocument response;
+  response["ok"] = true;
+  return enqueueResponse(response, event_queue);
+}
+
+void CommandDispatcher::clearPendingCandidate() {
+  pending_candidate_.clear();
 }

@@ -7,5 +7,5 @@ void setup() {
 }
 
 void loop() {
-  application.process();
+  delay(1000);
 }

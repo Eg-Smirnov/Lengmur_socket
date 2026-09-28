@@ -4,7 +4,10 @@
 
 bool AppEventQueue::push(AppCommand command, const uint8_t *payload,
                          size_t payload_size) {
-  if (size_ == kCapacity || payload_size > kAppEventPayloadSize ||
+  const size_t capacity = command == AppCommand::SendTransportResponse
+                              ? kCapacity
+                              : kCapacity - 1;
+  if (size_ >= capacity || payload_size > kAppEventPayloadSize ||
       (payload_size > 0 && payload == nullptr)) {
     return false;
   }

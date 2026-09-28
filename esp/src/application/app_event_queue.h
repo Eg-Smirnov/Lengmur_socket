@@ -9,7 +9,7 @@ class AppEventQueue {
  public:
   static constexpr size_t kCapacity = 8;
 
-  /** Copies one event into the FIFO if a slot and payload space are available. */
+  /** Copies one event while reserving the last slot for a transport response. */
   bool push(AppCommand command, const uint8_t *payload = nullptr,
             size_t payload_size = 0);
 

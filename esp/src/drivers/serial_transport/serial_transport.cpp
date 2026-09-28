@@ -7,6 +7,7 @@
 namespace {
 
 constexpr uint32_t kBaudRate = 115200;
+constexpr size_t kMaxBytesPerProcess = 64;
 constexpr char kQueueFullResponse[] =
     "{\"ok\":false,\"error\":\"queue_full\"}";
 
@@ -17,8 +18,10 @@ void SerialTransport::begin() {
 }
 
 void SerialTransport::process(AppEventQueue &event_queue) {
-  while (Serial.available() > 0) {
+  size_t processed = 0;
+  while (processed < kMaxBytesPerProcess && Serial.available() > 0) {
     const uint8_t byte = static_cast<uint8_t>(Serial.read());
+    ++processed;
     if (codec_.consume(byte, event_queue) ==
         FrameCodec::ConsumeResult::QueueFull) {
       sendQueueFull();

@@ -4,3 +4,4 @@ __pycache__/
 /esp/.build/
 *.sublime-workspace
 frame_codec_test.exe
+configuration_transaction_test.exe
