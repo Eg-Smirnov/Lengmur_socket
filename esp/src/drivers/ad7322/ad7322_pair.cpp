@@ -34,10 +34,10 @@ void Pair::begin() {
     return;
   }
 
-  digitalWrite(pins::USPI_CS, HIGH);
-  digitalWrite(pins::ISPI_CS, HIGH);
   pinMode(pins::USPI_CS, OUTPUT);
   pinMode(pins::ISPI_CS, OUTPUT);
+  digitalWrite(pins::USPI_CS, HIGH);
+  digitalWrite(pins::ISPI_CS, HIGH);
 
   voltage_spi_.begin(pins::USPI_CLK, pins::USPI_MISO, pins::USPI_MOSI, -1);
   current_spi_.begin(pins::ISPI_CLK, pins::ISPI_MISO, pins::ISPI_MOSI, -1);
