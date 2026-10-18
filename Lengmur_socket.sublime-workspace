@@ -1,1 +1,952 @@
-{}
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"nixos",
+				"nixos-wsl"
+			],
+			[
+				"back",
+				"\\BackPage{}"
+			],
+			[
+				"time",
+				"timeline-section"
+			],
+			[
+				"fi",
+				"fig2.png"
+			],
+			[
+				"fig",
+				"fig1.png"
+			],
+			[
+				"figur",
+				"bfigure\tfigure"
+			],
+			[
+				"tex",
+				"text3"
+			],
+			[
+				"fra",
+				"frame\tBeamer frame"
+			],
+			[
+				"inclgra",
+				"\\includegraphics[keyvals]{imagefile}"
+			],
+			[
+				"h",
+				"heiler2020"
+			],
+			[
+				"include",
+				"\\includegraphics*[keyvals]{imagefile}"
+			],
+			[
+				"begin",
+				"\\begin{figure}[placement]"
+			],
+			[
+				"sum",
+				"\\sum\\limits_{min}^{max}"
+			],
+			[
+				"caption",
+				"\\caption{heading}"
+			],
+			[
+				"inclu",
+				"\\includegraphics*[keyvals]{imagefile}"
+			],
+			[
+				"center",
+				"\\centering"
+			],
+			[
+				"begi",
+				"\\begin{figure}[placement]"
+			],
+			[
+				"epsilo",
+				"\\varepsilon"
+			],
+			[
+				"int",
+				"\\int_{min}^{max}"
+			],
+			[
+				"q",
+				"\\qquad"
+			],
+			[
+				"sec",
+				"\\section{title}"
+			],
+			[
+				"eq",
+				"equation"
+			],
+			[
+				"usepac",
+				"\\usepackage{package}"
+			],
+			[
+				"end",
+				"\\end{figure}"
+			],
+			[
+				"usepa",
+				"\\usepackage{package}"
+			],
+			[
+				"co",
+				"command"
+			],
+			[
+				"ar",
+				"argv"
+			],
+			[
+				"G",
+				"Gamer0"
+			],
+			[
+				"de",
+				"deck"
+			],
+			[
+				"d",
+				"deck"
+			],
+			[
+				"nam",
+				"names"
+			],
+			[
+				"get",
+				"get_table"
+			],
+			[
+				"sorte",
+				"sorted"
+			],
+			[
+				"l",
+				"last_round"
+			],
+			[
+				"upd",
+				"upd_table"
+			],
+			[
+				"is",
+				"is_game_run"
+			],
+			[
+				"PL",
+				"PLAYER_NUMBER"
+			],
+			[
+				"na",
+				"names"
+			],
+			[
+				"win_",
+				"win_gld"
+			],
+			[
+				"cow",
+				"cow_movie"
+			],
+			[
+				"mo",
+				"move_num"
+			],
+			[
+				"w",
+				"wprintw"
+			],
+			[
+				"cow_",
+				"cow_movie"
+			],
+			[
+				"s",
+				"scores"
+			],
+			[
+				"best",
+				"best_row"
+			],
+			[
+				"sor",
+				"sorted_moves"
+			],
+			[
+				"bes",
+				"best_row"
+			],
+			[
+				"cur",
+				"cur_dif"
+			],
+			[
+				"ga",
+				"game_run"
+			],
+			[
+				"ini",
+				"init_colors"
+			],
+			[
+				"be",
+				"best_row"
+			],
+			[
+				"new",
+				"new_used"
+			],
+			[
+				"ma",
+				"make_move"
+			],
+			[
+				"get_pl",
+				"get_players"
+			],
+			[
+				"ge",
+				"get_table"
+			],
+			[
+				"print",
+				"print_players"
+			],
+			[
+				"sc",
+				"score"
+			],
+			[
+				"re",
+				"refresh"
+			],
+			[
+				"prin",
+				"print_menu"
+			],
+			[
+				"pri",
+				"print_players"
+			],
+			[
+				"m",
+				"move"
+			],
+			[
+				"pl",
+				"players"
+			],
+			[
+				"name",
+				"fname"
+			],
+			[
+				"pla",
+				"player"
+			],
+			[
+				"get_",
+				"get_table"
+			],
+			[
+				"str",
+				"struct\tstruct"
+			],
+			[
+				"f",
+				"fname"
+			],
+			[
+				"arg",
+				"argv"
+			],
+			[
+				"x_",
+				"x_rl"
+			],
+			[
+				"y_",
+				"y_rl"
+			],
+			[
+				"SCREE",
+				"SCREEN_HEIGHT"
+			],
+			[
+				"SC",
+				"SCREEN_HEIGHT"
+			],
+			[
+				"SCR",
+				"SCREEN_HEIGHT"
+			],
+			[
+				"CR",
+				"SCREEN_WIDTH"
+			],
+			[
+				"printf",
+				"printf\tprintf …"
+			],
+			[
+				"tr",
+				"TreeSort"
+			],
+			[
+				"tree",
+				"tree_cnt"
+			],
+			[
+				"in",
+				"include"
+			],
+			[
+				"Tr",
+				"TreeSort"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "esp/src/drivers/ad7322/ad7322_pair.h",
+			"file_size": 976,
+			"file_write_time": 134362833030081467,
+			"settings":
+			{
+				"buffer_size": 938,
+				"line_ending": "Windows"
+			},
+			"undo_stack":
+			[
+			]
+		},
+		{
+			"file": "esp/src/drivers/ad7322/ad7322_pair.cpp",
+			"file_size": 3315,
+			"file_write_time": 134362910892519505,
+			"settings":
+			{
+				"buffer_size": 3315,
+				"line_ending": "Unix"
+			},
+			"undo_stack":
+			[
+				[
+					6,
+					1,
+					"revert",
+					null,
+					"GgAAAAAAAAAAAAAAAAAAAAAAAADzDAAAI2luY2x1ZGUgImFkNzMyMl9wYWlyLmgiCgovLyBPcHRpb25hbCB0aW1lc3RhbXAgc3VwcG9ydCwgY3VycmVudGx5IGRpc2FibGVkOgovLyAjaW5jbHVkZSA8ZXNwX3RpbWVyLmg+CgojaW5jbHVkZSAiLi4vcGlucy5oIgoKbmFtZXNwYWNlIGFkNzMyMiB7Cm5hbWVzcGFjZSB7Cgpjb25zdGV4cHIgdWludDMyX3Qga1NwaUNsb2NrSHogPSAyMDAwMDAwOwpjb25zdCBTUElTZXR0aW5ncyBrU3BpU2V0dGluZ3Moa1NwaUNsb2NrSHosIE1TQkZJUlNULCBTUElfTU9ERTApOwoKLy8gQUQ3MzIyIHJlZ2lzdGVyIGFkZHJlc3NlcyBhbmQgZmllbGRzIChkYXRhc2hlZXQgUmV2LiBCLCBUYWJsZXMgOC0xMykuCmNvbnN0ZXhwciB1aW50MTZfdCBrUmFuZ2VSZWdpc3RlclBtMTBWID0gMHhBMDAwOyAgLy8gVklOMC9WSU4xOiArLy0xMCBWLgpjb25zdGV4cHIgdWludDE2X3Qga0NvbnRyb2xQc2V1ZG9EaWZmZXJlbnRpYWwgPQogICAgMHg4MDAwIHwgKDFVIDw8IDgpIHwgKDFVIDw8IDQpOyAgLy8gTU9ERTA9MSwgUkVGPTEsIEFERDA9MC4KCn0gIC8vIG5hbWVzcGFjZQoKUGFpcjo6UGFpcigpIDogdm9sdGFnZV9zcGlfKEhTUEkpLCBjdXJyZW50X3NwaV8oVlNQSSkge30KCnVpbnQxNl90IFBhaXI6OnRyYW5zZmVyKFNQSUNsYXNzICZzcGksIHVpbnQ4X3QgY3NfcGluLCB1aW50MTZfdCBjb21tYW5kKSB7CiAgc3BpLmJlZ2luVHJhbnNhY3Rpb24oa1NwaVNldHRpbmdzKTsKICBkaWdpdGFsV3JpdGUoY3NfcGluLCBMT1cpOwogIGNvbnN0IHVpbnQxNl90IGZyYW1lID0gc3BpLnRyYW5zZmVyMTYoY29tbWFuZCk7CiAgZGlnaXRhbFdyaXRlKGNzX3BpbiwgSElHSCk7CiAgc3BpLmVuZFRyYW5zYWN0aW9uKCk7CiAgcmV0dXJuIGZyYW1lOwp9Cgp2b2lkIFBhaXI6OmJlZ2luKCkgewogIGlmIChzdGFydGVkXykgewogICAgcmV0dXJuOwogIH0KCiAgZGlnaXRhbFdyaXRlKHBpbnM6OlVTUElfQ1MsIEhJR0gpOwogIGRpZ2l0YWxXcml0ZShwaW5zOjpJU1BJX0NTLCBISUdIKTsKICBwaW5Nb2RlKHBpbnM6OlVTUElfQ1MsIE9VVFBVVCk7CiAgcGluTW9kZShwaW5zOjpJU1BJX0NTLCBPVVRQVVQpOwoKICB2b2x0YWdlX3NwaV8uYmVnaW4ocGluczo6VVNQSV9DTEssIHBpbnM6OlVTUElfTUlTTywgcGluczo6VVNQSV9NT1NJLCAtMSk7CiAgY3VycmVudF9zcGlfLmJlZ2luKHBpbnM6OklTUElfQ0xLLCBwaW5zOjpJU1BJX01JU08sIHBpbnM6OklTUElfTU9TSSwgLTEpOwoKICAvLyBUaGUgcmFuZ2UgcmVnaXN0ZXIgbXVzdCBiZSB3cml0dGVuIGJlZm9yZSB0aGUgY29udHJvbCByZWdpc3Rlci4KICB0cmFuc2Zlcih2b2x0YWdlX3NwaV8sIHBpbnM6OlVTUElfQ1MsIGtSYW5nZVJlZ2lzdGVyUG0xMFYpOwogIHRyYW5zZmVyKGN1cnJlbnRfc3BpXywgcGluczo6SVNQSV9DUywga1JhbmdlUmVnaXN0ZXJQbTEwVik7CiAgdHJhbnNmZXIodm9sdGFnZV9zcGlfLCBwaW5zOjpVU1BJX0NTLCBrQ29udHJvbFBzZXVkb0RpZmZlcmVudGlhbCk7CiAgdHJhbnNmZXIoY3VycmVudF9zcGlfLCBwaW5zOjpJU1BJX0NTLCBrQ29udHJvbFBzZXVkb0RpZmZlcmVudGlhbCk7CgogIGRlbGF5TWljcm9zZWNvbmRzKDUwMCk7ICAvLyBJbnRlcm5hbCByZWZlcmVuY2Ugc3RhcnQtdXAgdGltZS4KICBzdGFydGVkXyA9IHRydWU7CiAgU2FtcGxlUGFpciBpZ25vcmVke307CiAgcmVhZChpZ25vcmVkKTsgIC8vIERpc2NhcmQgdGhlIGZpcnN0IGNvbnZlcnNpb24gYWZ0ZXIgY29uZmlndXJhdGlvbi4KfQoKdm9pZCBQYWlyOjplbmQoKSB7CiAgaWYgKCFzdGFydGVkXykgewogICAgcmV0dXJuOwogIH0KICB2b2x0YWdlX3NwaV8uZW5kKCk7CiAgY3VycmVudF9zcGlfLmVuZCgpOwogIHN0YXJ0ZWRfID0gZmFsc2U7Cn0KCmJvb2wgUGFpcjo6ZGVjb2RlKHVpbnQxNl90IGZyYW1lLCBpbnQxNl90ICZ2YWx1ZSkgewogIC8vIEJpdHMgMTU6MTQgbXVzdCBiZSB6ZXJvOyBiaXQgMTMgaWRlbnRpZmllcyBWSU4wICh6ZXJvKS4KICBpZiAoKGZyYW1lICYgMHhFMDAwVSkgIT0gMCkgewogICAgcmV0dXJuIGZhbHNlOwogIH0KICBjb25zdCB1aW50MTZfdCBzaWduZWQxMyA9IGZyYW1lICYgMHgxRkZGVTsKICB2YWx1ZSA9IHN0YXRpY19jYXN0PGludDE2X3Q+KHNpZ25lZDEzIHwgKChzaWduZWQxMyAmIDB4MTAwMFUpID8gMHhFMDAwVSA6IDApKTsKICByZXR1cm4gdHJ1ZTsKfQoKYm9vbCBQYWlyOjpyZWFkKFNhbXBsZVBhaXIgJnNhbXBsZSkgewogIGlmICghc3RhcnRlZF8pIHsKICAgIHJldHVybiBmYWxzZTsKICB9CgogIHZvbHRhZ2Vfc3BpXy5iZWdpblRyYW5zYWN0aW9uKGtTcGlTZXR0aW5ncyk7CiAgY3VycmVudF9zcGlfLmJlZ2luVHJhbnNhY3Rpb24oa1NwaVNldHRpbmdzKTsKCiAgLy8gT3B0aW9uYWwgdGltZXN0YW1wIG1lYXN1cmVtZW50LCBjdXJyZW50bHkgZGlzYWJsZWQgdG8ga2VlcCBTYW1wbGVQYWlyCiAgLy8gbWluaW1hbCBhbmQgYXZvaWQgZXh0cmEgd29yayBiZXR3ZWVuIHRoZSB0d28gQ1MgZmFsbGluZyBlZGdlczoKICAvLyBjb25zdCB1aW50NjRfdCBiZWZvcmVfdXMgPSBzdGF0aWNfY2FzdDx1aW50NjRfdD4oZXNwX3RpbWVyX2dldF90aW1lKCkpOwogIGRpZ2l0YWxXcml0ZShwaW5zOjpVU1BJX0NTLCBMT1cpOwogIGRpZ2l0YWxXcml0ZShwaW5zOjpJU1BJX0NTLCBMT1cpOwogIC8vIGNvbnN0IHVpbnQ2NF90IGFmdGVyX3VzID0gc3RhdGljX2Nhc3Q8dWludDY0X3Q+KGVzcF90aW1lcl9nZXRfdGltZSgpKTsKCiAgY29uc3QgdWludDE2X3Qgdm9sdGFnZV9mcmFtZSA9IHZvbHRhZ2Vfc3BpXy50cmFuc2ZlcjE2KDApOwogIGNvbnN0IHVpbnQxNl90IGN1cnJlbnRfZnJhbWUgPSBjdXJyZW50X3NwaV8udHJhbnNmZXIxNigwKTsKCiAgZGlnaXRhbFdyaXRlKHBpbnM6OlVTUElfQ1MsIEhJR0gpOwogIGRpZ2l0YWxXcml0ZShwaW5zOjpJU1BJX0NTLCBISUdIKTsKICBjdXJyZW50X3NwaV8uZW5kVHJhbnNhY3Rpb24oKTsKICB2b2x0YWdlX3NwaV8uZW5kVHJhbnNhY3Rpb24oKTsKCiAgaW50MTZfdCB2b2x0YWdlID0gMDsKICBpbnQxNl90IGN1cnJlbnQgPSAwOwogIGlmICghZGVjb2RlKHZvbHRhZ2VfZnJhbWUsIHZvbHRhZ2UpIHx8ICFkZWNvZGUoY3VycmVudF9mcmFtZSwgY3VycmVudCkpIHsKICAgIHJldHVybiBmYWxzZTsKICB9CiAgc2FtcGxlID0ge3ZvbHRhZ2UsIGN1cnJlbnR9OwogIC8vIFRvIHJlc3RvcmUgdGltZXN0YW1wcywgYWxzbyBhZGQgdGltZXN0YW1wX3VzIHRvIFNhbXBsZVBhaXIgYW5kIHVzZToKICAvLyBzYW1wbGUudGltZXN0YW1wX3VzID0gKGJlZm9yZV91cyArIGFmdGVyX3VzKSAvIDI7CiAgcmV0dXJuIHRydWU7Cn0KCn0gIC8vIG5hbWVzcGFjZSBhZDczMjIKAAAAAAAAAADzDAAAAAAAAAAAAAAAAAAAAAAAAPMMAAAAAAAAAAAAAAAAAAAAAAAA8wwAAAAAAAAAAAAAAAAAAAAAAADzDAAAAAAAAAAAAAAAAAAAAAAAAPMMAAAAAAAAAAAAAAAAAAAAAAAA8wwAAAAAAAAAAAAAAAAAAAAAAADzDAAAAAAAAAAAAAAAAAAAAAAAAPMMAAAAAAAAAAAAAAAAAAAAAAAA8wwAAAAAAAAAAAAAAAAAAAAAAADzDAAAAAAAAAAAAAAAAAAAAAAAAPMMAAAAAAAAAAAAAAAAAAAAAAAA8wwAAAAAAAAAAAAAAAAAAAAAAADzDAAAAAAAAAAAAAAAAAAAAAAAAPMMAAAAAAAAAAAAAAAAAAAAAAAA8wwAAAAAAAAAAAAAAAAAAAAAAADzDAAAAAAAAAAAAAAAAAAAAAAAAPMMAAAAAAAAAAAAAAAAAAAAAAAA8wwAAAAAAAAAAAAAAAAAAAAAAADzDAAAAAAAAAAAAAAAAAAAAAAAAPMMAAAAAAAAAAAAAAAAAAAAAAAA8wwAAAAAAAAAAAAAAAAAAAAAAADzDAAAAAAAAAAAAAAAAAAAAAAAAPMMAAAAAAAAAAAAAAAAAAAAAAAA8wwAAAAAAAAAAAAAAAAAAAAAAADzDAAAAAAAAAAAAAA",
+					"GQAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPC/AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8L8AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwvwAAAAABAAAAJAUAAAAAAAAkBQAAAAAAAAAAAAAAAPC/"
+				]
+			]
+		}
+	],
+	"build_system": "Packages/LaTeXTools/Compile to PDF.sublime-build",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/LaTeXTools/Compile to PDF.sublime-build",
+					""
+				],
+				[
+					"Packages/LaTeXTools/Compile to PDF.sublime-build",
+					"Traditional Builder"
+				],
+				[
+					"Packages/LaTeXTools/Compile to PDF.sublime-build",
+					"Traditional Builder with PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/Compile to PDF.sublime-build",
+					"Traditional Builder with XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/Compile to PDF.sublime-build",
+					"Traditional Builder with LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/Compile to PDF.sublime-build",
+					"Basic Builder"
+				],
+				[
+					"Packages/LaTeXTools/Compile to PDF.sublime-build",
+					"Basic Builder with PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/Compile to PDF.sublime-build",
+					"Basic Builder with XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/Compile to PDF.sublime-build",
+					"Basic Builder with LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/Compile to PDF.sublime-build",
+					"Script Builder"
+				],
+				[
+					"Packages/User/cpp_win32.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/LaTeXTools/Compile to PDF.sublime-build",
+				"Traditional Builder with XeLaTeX"
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"lsp res",
+				"LSP: Restart Server"
+			],
+			[
+				"lsp log",
+				"LSP: Toggle Log Panel"
+			],
+			[
+				"lsp re",
+				"Preferences: LSP Settings"
+			],
+			[
+				"lsp-cl",
+				"Preferences: LSP-clangd Settings"
+			],
+			[
+				"packe",
+				"Package Control: Advanced Upgrade Packages"
+			],
+			[
+				"lsp resta",
+				"LSP: Restart Server"
+			],
+			[
+				"lsp tro",
+				"LSP: Troubleshoot Server"
+			],
+			[
+				"packe in",
+				"Package Control: Install Package"
+			],
+			[
+				"lsp-cla",
+				"Preferences: LSP-clangd Settings"
+			],
+			[
+				"pack in ",
+				"Package Control: Install Package"
+			],
+			[
+				"packe re",
+				"Package Control: Remove Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"markdown",
+				"Markdown Preview: Open Preview"
+			],
+			[
+				"package",
+				"Package Control: Remove Package"
+			],
+			[
+				"mark",
+				"MarkdownLivePreview: Open Settings"
+			],
+			[
+				"pakege",
+				"Package Control: Install Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"",
+				"Arithmetic"
+			],
+			[
+				"build ",
+				"Build: Cancel"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 437.0,
+		"history":
+		[
+			"clr",
+			"clear"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/Users/Egor/Lengmur_socket",
+		"/C/Users/Egor/Lengmur_socket/esp",
+		"/C/Users/Egor/Lengmur_socket/esp/src",
+		"/C/Users/Egor/Lengmur_socket/esp/src/acquisition",
+		"/C/Users/Egor/Lengmur_socket/esp/src/drivers",
+		"/C/Users/Egor/Lengmur_socket/esp/src/drivers/ad7322",
+		"/C/Users/Egor/Lengmur_socket/esp/src/drivers/adg5408",
+		"/C/Users/Egor/Lengmur_socket/laptop"
+	],
+	"file_history":
+	[
+		"/C/Users/Egor/Lengmur_socket/.gitignore",
+		"/C/Users/Egor/Lengmur_socket/esp/sketch.yaml",
+		"/C/Users/Egor/NixOS-Config/hosts/vps2/iso-network-bootstrap.md",
+		"/C/Users/Egor/AppData/Local/Temp/1768458586/secrets.yaml",
+		"/C/Users/Egor/NixOS-Config/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json",
+		"/C/Users/Egor/Lengmur_socket/docs/development/build.md",
+		"/C/Users/Egor/Lengmur_socket/esp/src/drivers/adg5408/adg5408.h",
+		"/C/Users/Egor/Lengmur_socket/esp/src/drivers/ad7322/ad7322_pair.h",
+		"/C/Users/Egor/Lengmur_socket/esp/src/drivers/serial_protocol/protocol.h",
+		"/C/Users/Egor/Lengmur_socket/esp/src/drivers/output_control/output_control.h",
+		"/C/Users/Egor/Lengmur_socket/esp/src/drivers/ad7322/ad7322_pair.cpp",
+		"/C/Users/Egor/Lengmur_socket/esp/src/acquisition/acquisition.h",
+		"/C/Users/Egor/Lengmur_socket/esp/src/drivers/serial_protocol/protocol.cpp",
+		"/C/Users/Egor/Lengmur_socket/esp/.clangd",
+		"/C/Users/Egor/Lengmur_socket/esp/src/acquisition/acquisition.cpp",
+		"/C/Users/Egor/Lengmur_socket/.git/MERGE_MSG",
+		"/C/Users/Egor/Documents/кружки и прочий преп/10 класс/баллистика/баллистика.tex",
+		"/C/Users/Egor/Lengmur_socket/docs/client/desktop-app.md",
+		"/C/Users/Egor/Lengmur_socket/docs/protocols/serial.md",
+		"/C/Users/Egor/Lengmur_socket/docs/protocols/commands.md",
+		"/C/Users/Egor/Lengmur_socket/docs/firmware/configuration.md",
+		"/C/Users/Egor/Lengmur_socket/docs/hardware/analog-front-end.md",
+		"/C/Users/Egor/Lengmur_socket/docs/hardware/ethernet.md",
+		"/C/Users/Egor/Lengmur_socket/docs/hardware/pinout.md",
+		"/C/Users/Egor/Lengmur_socket/docs/hardware/overview.md",
+		"/C/Users/Egor/Lengmur_socket/tools/generate_config.py",
+		"/C/Users/Egor/AppData/Roaming/Sublime Text 3/Packages/User/LSP-clangd.sublime-settings",
+		"/C/Users/Egor/AppData/Roaming/Sublime Text 3/Packages/LSP-clangd/LSP-clangd.sublime-settings",
+		"/C/Users/Egor/Lengmur_socket/esp/src/drivers/adg5408/adg5408.cpp",
+		"/C/Users/Egor/Lengmur_socket/TODO.md",
+		"/C/Users/Egor/Lengmur_socket/esp/drivers/pins.h",
+		"/C/Users/Egor/Lengmur_socket/esp/src/drivers/adg5408/README.md",
+		"/C/Users/Egor/Lengmur_socket/README.md",
+		"/C/Users/Egor/Lengmur_socket/.build/build.options.json",
+		"/C/Users/Egor/Lengmur_socket/config.json",
+		"/C/Users/Egor/Lengmur_socket/AGENTS.md",
+		"/C/Users/Egor/NixOS-Config/hosts/vps1/networking.nix",
+		"/C/Users/Egor/NixOS-Config/hosts/vps1/default.nix",
+		"/C/Users/Egor/NixOS-Config/hosts/server/boot.nix",
+		"/C/Users/Egor/NixOS-Config/hosts/server/default.nix",
+		"/C/Users/Egor/NixOS-Config/flake.nix",
+		"/C/Users/Egor/AppData/Local/Temp/198878227/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/1223631238/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/379940052/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/1319380831/secrets.yaml",
+		"/P/BIOS/platform.ini",
+		"/C/Users/Egor/Lengmur_socket/esp/protocol.cpp",
+		"/C/Users/Egor/NixOS-Config/.github/workflows/nixos.yml",
+		"/C/Users/Egor/NixOS-Config/modules/common/auto-update/default.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/auto-update/health-check.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/auto-update/fetch.nix",
+		"/C/Users/Egor/NixOS-Config/.sops.yaml",
+		"/C/Users/Egor/NixOS-Config/modules/common/networking/vpn/xray.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/networking/vpn/xray-watchdog.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/networking/vpn/xray-routing.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/networking/vpn/xray-vpn.nix",
+		"/C/Users/Egor/NixOS-Config/modules/server/arrs/flaresolverr.nix",
+		"/C/Users/Egor/NixOS-Config/hosts/wsl/infrastructure.nix",
+		"/C/Users/Egor/NixOS-Config/hosts/server/infrastructure.nix",
+		"/C/Users/Egor/NixOS-Config/hosts/wsl/default.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/networking/reverse-ssh.nix",
+		"/C/Users/Egor/NixOS-Config/.gitattributes",
+		"/C/Users/Egor/AppData/Local/Temp/2347116532/secrets.yaml",
+		"/C/Users/Egor/NixOS-Config/modules/server/jellyfin/default.nix",
+		"/C/Users/Egor/NixOS-Config/modules/server/arrs/prowlarr.nix",
+		"/C/Users/Egor/NixOS-Config/modules/server/media.nix",
+		"/C/Users/Egor/NixOS-Config/modules/server/arrs/radarr.nix",
+		"/C/Users/Egor/NixOS-Config/modules/server/torrent/default.nix",
+		"/C/Users/Egor/NixOS-Config/modules/server/arrs/sonarr.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/system/impermanence.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/networking/networking.nix",
+		"/C/Users/Egor/AppData/Local/Temp/1103284820/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/255656437/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/81986277/secrets.yaml",
+		"/C/Users/Egor/NixOS-Config/modules/common/security/known-hosts.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/security/ssh.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/system/configuration.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/security/sops.nix",
+		"/C/Users/Egor/AppData/Local/Temp/3038671570/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/3938427508/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/340203288/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/211040598/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/1119065593/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/2909624587/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/2587101490/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/1217766158/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/1408915927/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/2043413208/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/1920791982/secrets.yaml",
+		"/C/Users/Egor/NixOS-Config/modules/common/programs/git.nix",
+		"/C/Users/Egor/AppData/Local/Temp/3002075164/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/2951952259/secrets.yaml",
+		"/C/Users/Egor/NixOS-Config/modules/common/networking/vpn/amnezia.nix",
+		"/C/Users/Egor/Downloads/conf.txt",
+		"/C/Users/Egor/AppData/Local/Temp/2509866391/secrets.yaml",
+		"/C/Users/Egor/Downloads/conf.json",
+		"/C/Users/Egor/NixOS-Config/modules/common/system/locale.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/users/users.nix",
+		"/C/Users/Egor/NixOS-Config/modules/common/system/power.nix",
+		"/C/Users/Egor/AppData/Local/Temp/2329732042/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/1313956105/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/1416058944/secrets.yaml",
+		"/C/Users/Egor/AppData/Local/Temp/759127317/secrets.yaml",
+		"/C/Users/Egor/NixOS-Config/configuration.nix",
+		"/C/Users/Egor/Documents/Code/tex_i/wedding/slave.tex",
+		"/C/Users/Egor/Documents/Code/tex_i/wedding/sitting.tex",
+		"/C/Users/Egor/Documents/Code/tex_i/wedding/main.tex",
+		"/C/Users/Egor/Documents/Code/tex_i/wedding/slave.log",
+		"/C/Users/Egor/Documents/уеба/катя/отчет 2026/sections/conclusion.tex",
+		"/C/Users/Egor/Documents/уеба/катя/отчет 2026/sections/results.tex",
+		"/C/Users/Egor/Documents/уеба/катя/отчет 2026/sections/methods.tex",
+		"/C/Users/Egor/Documents/уеба/катя/отчет 2026/slids.tex",
+		"/C/Users/Egor/Documents/уеба/катя/отчет 2026/main.tex",
+		"/C/Users/Egor/Documents/уеба/катя/отчет 2026/bibliography.bib",
+		"/C/Users/Egor/Documents/уеба/катя/отчет 2026/title.tex",
+		"/C/Users/Egor/Documents/уеба/катя/отчет 2026/literature.tex",
+		"/C/Users/Egor/Documents/уеба/катя/отчет 2026/introduction.tex",
+		"/C/Code/wedding-site/wedding_site/app.py",
+		"/C/Code/wedding-site/wedding_site/static/css/style.css",
+		"/C/Code/wedding-site/wedding_site/templates/card3.html",
+		"/C/Code/wedding-site/wedding_site/templates/card2.html",
+		"/C/Code/wedding-site/wedding_site/templates/card1.html",
+		"/C/Code/wedding-site/wedding_site/templates/card.html",
+		"/C/Code/wedding-site/wedding_site/templates/index.html",
+		"/C/Code/wedding-site/static/js/timer.js",
+		"/C/Code/wedding-site/static/css/style.css",
+		"/C/Code/wedding-site/templates/index.html"
+	],
+	"find":
+	{
+		"height": 29.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"selectOhms",
+			"shunt_res"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "esp/src/drivers/ad7322/ad7322_pair.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 938,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								699,
+								699
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": "<",
+									"selector": "text.html, text.xml"
+								},
+								{
+									"rhs_empty": true,
+									"selector": "punctuation.accessor"
+								},
+								{
+									"characters": "\\",
+									"selector": "text.tex.latex"
+								},
+								{
+									"characters": ".<>:\"/*",
+									"selector": "punctuation.accessor | (meta.preprocessor.include string - punctuation.definition.string.end)",
+									"server": "LSP-clangd"
+								}
+							],
+							"line_numbers": true,
+							"lsp_active": true,
+							"lsp_uri": "file:///C:/Users/Egor/Lengmur_socket/esp/src/drivers/ad7322/ad7322_pair.h",
+							"show_definitions": false,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"vintage_lines.line": -1,
+							"vintage_lines.lines": 38,
+							"vintage_lines.mode": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "esp/src/drivers/ad7322/ad7322_pair.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3315,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								599,
+								543
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": "<",
+									"selector": "text.html, text.xml"
+								},
+								{
+									"rhs_empty": true,
+									"selector": "punctuation.accessor"
+								},
+								{
+									"characters": "\\",
+									"selector": "text.tex.latex"
+								},
+								{
+									"characters": ".<>:\"/*",
+									"selector": "punctuation.accessor | (meta.preprocessor.include string - punctuation.definition.string.end)",
+									"server": "LSP-clangd"
+								}
+							],
+							"line_numbers": true,
+							"lsp_active": true,
+							"lsp_uri": "file:///C:/Users/Egor/Lengmur_socket/esp/src/drivers/ad7322/ad7322_pair.cpp",
+							"show_definitions": false,
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true,
+							"vintage_lines.line": -1,
+							"vintage_lines.lines": 110,
+							"vintage_lines.mode": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"stack_multiselect": false,
+					"type": "text"
+				},
+				{
+					"contents": "<body id=\"markdown-preview\">\n<style>\nbody#markdown-preview {\n    background-color: #292828;\n    color: #d4be98;\n    font-family: system;\n    font-size: 1rem;\n    margin: 0;\n    padding: 0;\n}\n.content { padding: 14px 20px; }\nh1, h2, h3, h4, h5, h6 {\n    color: #d4be98;\n    font-weight: bold;\n    margin: 18px 0 8px 0;\n}\nh1 { font-size: 1.8rem; border-bottom: 1px solid #4b463e; padding-bottom: 3px; }\nh2 { font-size: 1.5rem; border-bottom: 1px solid #4b463e; padding-bottom: 3px; }\nh3 { font-size: 1.25rem; }\nh4 { font-size: 1.1rem; }\np { line-height: 1.5; margin: 8px 0; }\na { color: #a9b665; text-decoration: none; }\nstrong, b { font-weight: bold; }\nem, i { font-style: italic; }\ncode {\n    background-color: #33312f;\n    color: #d8a657;\n    padding: 1px 4px;\n    border-radius: 3px;\n    font-family: \"Consolas\", monospace;\n}\n.code-block, .table-block {\n    background-color: #33312f;\n    border: 1px solid #4b463e;\n    border-radius: 4px;\n    padding: 8px 12px;\n    margin: 10px 0;\n    font-family: \"Consolas\", monospace;\n    font-size: 0.9rem;\n    line-height: 1.4;\n}\n.md-quote {\n    border-left: 3px solid #4b463e;\n    color: #766c5a;\n    margin: 10px 0;\n    padding: 2px 0 2px 12px;\n}\n/* padding-left (not margin) keeps the bullet inside the list box so it doesn't\n   hang to the left of the body text; 22px matches .md-ol's indent. */\nul { margin: 6px 0; padding-left: 22px; }\nli { line-height: 1.5; margin: 2px 0; }\n.md-ol { margin: 6px 0 6px 22px; padding: 0; }\n.md-li { margin: 2px 0; line-height: 1.5; }\n.li-num { color: #766c5a; font-weight: bold; }\n.task-item { margin: 2px 0; line-height: 1.5; }\n.checkbox { font-family: \"Consolas\", monospace; }\nhr { border: none; border-top: 1px solid #4b463e; margin: 16px 0; }\nimg { }\n</style>\n<div class=\"content\">\n<h1>Задачи проекта</h1>\n\n<p>Здесь хранятся короткие задачи и ссылки на относящиеся к ним материалы. Отмечайте выполненное галочкой, а подробные технические заметки при необходимости выносите в отдельный документ.</p>\n\n<h2>В планах</h2>\n\n<ul>\n<li><p><span class=\"checkbox\">☐</span> Разработать метод проверки драйвера мультиплексора ADG5408.</p>\n\n<ul>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> На отладочной плате подтверждено, что встроенный светодиод подключён к GPIO2 и активен уровнем HIGH: временно перенесённый на GPIO2 сигнал <code>OUT_EN</code> корректно включал и выключал светодиод.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Проверено переключение <code>RES_SEL_0</code> по встроенному светодиоду при записи фиксированных <code>shunt_res</code>; обнаружено и исправлено отложенное применение настройки только при <code>measure_once</code>.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☐</span> Определить, как безопасно подтвердить выбор каждого из шести каналов без записи прошивки и без предположения, что максимальное сопротивление всегда является самым безопасным.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☐</span> Выбрать наблюдаемый критерий проверки: измерение уровней на адресных линиях, проверка сопротивления внешним прибором либо диагностическое измерение через аналоговый тракт.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☐</span> Описать последовательность проверки, ожидаемые состояния <code>A2 A1 A0</code> и способ выявления ошибочного выбора канала.</div>\n</ul></li>\n<li><p><span class=\"checkbox\">☐</span> Перевести оба AD7322 с псевдодифференциального на single-ended режим и использовать только VIN0.</p>\n\n<ul>\n<li>Для обоих АЦП установить <code>MODE1:MODE0 = 00</code>; выбрать <code>ADD0 = 0</code>, то есть измерять VIN0 относительно AGND. Сохранить требуемый диапазон ±10 В и остальные необходимые настройки.</li>\n<li>Во всём коде драйвера и связанных интерфейсах использовать только результат VIN0; VIN1 не выбирать, не измерять и не использовать при декодировании или расчётах.</li>\n<li>Обновить комментарии и документацию AD7322, удалив утверждения о псевдодифференциальном измерении.</li>\n<li>Проверить сборку и код: ожидаемый нулевой уровень должен интерпретироваться как около нуля, а полярность отсчёта VIN0 — соответствовать двухкомплементарному коду.</li>\n<div class=\"task-item\"><span class=\"checkbox\">☐</span> После изменений проверить на реальном устройстве безопасные положительный и отрицательный сигналы относительно AGND на VIN0 обоих АЦП; подтвердить знак и разумное изменение сырых кодов. VIN1 не задействовать в измерениях.</div>\n</ul></li>\n<li><p><span class=\"checkbox\">☑</span> Проверить прохождение управляющих сигналов к напряженческому AD7322 диагностической прошивкой 0,25 Гц.</p>\n\n<ul>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> На стороне ESP32 подтверждено переключение GPIO33 (<code>USPI_CS</code>), GPIO14 (<code>USPI_CLK</code>) и GPIO32 (<code>USPI_MOSI</code>).</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> На выводах <code>CS</code>, <code>SCLK</code> и <code>DIN</code> напряженческого AD7322 подтверждено периодическое изменение уровней после цифровой развязки.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> На линиях токового AD7322 периодических изменений не обнаружено; соответствие двух SPI-интерфейсов не перепутано.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☐</span> После исправления начального уровня <code>CS</code> проверить появление около 2,5 В на <code>REFIN/OUT</code> обоих AD7322.</div>\n</ul></li>\n<li><p><span class=\"checkbox\">☐</span> Добавить Ethernet через PHY KSZ8081RNACA-TR; до этого использовать только USB Serial.</p>\n\n<ul>\n<li>Подтверждённую разводку тактирования см. в <code>docs/hardware/ethernet.md</code>: кварц 25 МГц на XI/XO PHY, выход <code>REF_CLK</code> 50 МГц через последовательный резистор на GPIO0, подтяжка GPIO0 к +3,3 В через 20 кОм. Уточнить точный номинал резистора с маркировкой <code>33</code> и обозначение четырёхконтактного кварца только при диагностике аппаратной части — драйверу они не нужны.</li>\n<li>По схеме определить PHY-адрес MDIO и все режимные подтяжки KSZ8081.</li>\n<li>Проверить запуск: выяснить активный уровень, подтяжку и задержки <code>ETH_RST</code> (GPIO5), удерживается ли PHY в сбросе и отключён ли <code>REF_CLK</code> в момент считывания загрузочного уровня GPIO0.</li>\n<li>Реализовать в <code>esp/src/drivers/ethernet/</code> инициализацию RMII/MDC/MDIO/сброса и обработку состояния соединения, используя готовую поддержку KSZ80xx в ESP-IDF/Arduino core, если она доступна в закреплённой версии; не писать PHY-регистры с нуля без необходимости. Сетевой протокол и переключение с USB обсудить отдельно.</li>\n<li>Критерий этапа: код компилируется для ESP32-WROOM-32 без загрузки на плату; фактическую работу Ethernet проверить позднее на устройстве вручную.</li>\n</ul></li>\n</ul>\n\n<p>Документы: <a href=\"https://ww1.microchip.com/downloads/aemDocuments/documents/UNG/ProductDocuments/DataSheets/KSZ8081RNA-RND-10BASE-T-100-BASE-TX-PHY-with-RMII-Support-DS00002199F.pdf\">KSZ8081RNA/RND</a>, <a href=\"https://docs.espressif.com/projects/esp-hardware-design-guidelines/en/latest/esp32/schematic-checklist.html\">рекомендации Espressif по RMII</a>.</p>\n\n<h2>В работе</h2>\n\n<ul>\n<li><p><span class=\"checkbox\">☐</span> Добавить управление силовым выходом <code>OUT_EN</code> из клиентского приложения.</p>\n\n<ul>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Инициализировать <code>OUT_EN</code> как выход с безопасным уровнем LOW и добавить Serial-команды чтения и переключения состояния.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Добавить в клиент кнопку переключения <code>OUT_EN</code> с отображением фактического состояния.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Проверить компиляцию прошивки и синтаксис клиентского приложения без загрузки на плату.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Временно проверить управление <code>OUT_EN</code> по встроенному светодиоду отладочной платы на GPIO2: после загрузки подключить клиент и последовательно нажать кнопку дважды, проверив включение и выключение светодиода.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☐</span> Проверить управление на целевой плате: убедиться в начальном уровне LOW и переключении HIGH/LOW на GPIO17.</div>\n</ul></li>\n<li><p><span class=\"checkbox\">☐</span> Реализовать диагностический сценарий однократного измерения с передачей результата на компьютер для интеграционной проверки разработанных драйверов.</p>\n\n<ul>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Добавить команду <code>measure_once</code> и ответ с сырыми кодами напряжения и тока, а также фактически выбранным шунтом.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Реализовать в прошивке одиночное измерение через драйверы AD7322 и ADG5408. Для <code>shunt_res: \"auto\"</code> временно используется шунт по умолчанию 10 МОм.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Добавить в клиентское приложение запуск измерения и вывод результата.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☐</span> Проверить диагностический сценарий на реальном устройстве.\n<ul>\n<li>Самостоятельно загрузить собранную прошивку на ESP32-WROOM-32 и убедиться, что плата запускается без циклических перезагрузок и ошибок инициализации.</li>\n<li>Подключить клиентское приложение по USB Serial, проверить чтение и запись настроек, затем выполнить <code>measure_once</code> из интерфейса.</li>\n<li>Убедиться, что ответ содержит целочисленные <code>voltage_raw</code>, <code>current_raw</code> и фактически выбранный <code>shunt_res</code>, а клиент корректно отображает эти значения.</li>\n<li>Поочерёдно проверить все шесть фиксированных сопротивлений; сопоставить возвращаемый <code>shunt_res</code> с настройкой и проконтролировать адресные линии либо фактический выбранный канал внешним прибором.</li>\n<li>Отдельно проверить режим <code>auto</code>: в текущей реализации ответ должен содержать значение по умолчанию 10 МОм.</li>\n<li>Подать на входы заведомо безопасные контрольные сигналы и проверить знак, устойчивость и разумное изменение сырых кодов обоих АЦП. Не использовать сетевое напряжение до подтверждения безопасности и коэффициентов аналогового тракта.</li>\n<li>Проверить повторные измерения, переключение шунта между запросами и восстановление обмена после повреждённого либо неполного кадра.</li>\n<li>Зафиксировать результаты, обнаруженные ограничения и условия испытания; только после успешной аппаратной проверки отметить общую задачу выполненной.</li>\n</ul></div>\n</ul></li>\n</ul>\n\n<h2>Готово</h2>\n\n<ul>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Создать централизованный раздел <code>docs/</code> и реорганизовать документацию проекта.\n<ul>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Провести инвентаризацию Markdown-файлов и разделить материалы по аппаратной части, прошивке и драйверам, протоколам, клиентскому приложению и разработке.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Перенести содержательную документацию в <code>docs/</code>, устранить дублирование и сохранить корневой <code>README.md</code> краткой точкой входа.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Добавить индекс <code>docs/README.md</code>, обновить внутренние ссылки, упоминания путей и команды.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Сохранить единый корневой <code>AGENTS.md</code>: текущие задачи комплексные и не требуют локальной иерархии инструкций.</div>\n<div class=\"task-item\"><span class=\"checkbox\">☑</span> Проверить навигацию, относительные ссылки и отсутствие противоречащих инструкций.</div>\n</ul></div>\n</ul>\n\n</div>\n</body>",
+					"file": "Preview: TODO.md",
+					"selected": true,
+					"semi_transient": false,
+					"stack_index": 0,
+					"stack_multiselect": false,
+					"type": "html"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 29.0
+	},
+	"input":
+	{
+		"height": 41.3333333333
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.LSP Log Panel":
+	{
+		"height": 142.0,
+		"history":
+		[
+		]
+	},
+	"output.diagnostics":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"output.exec":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"output.find_results":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"output.mdpopups":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"pinned_build_system": "",
+	"project": "Lengmur_socket.sublime-project",
+	"replace":
+	{
+		"height": 54.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+		"lsp_show_inlay_hints": true
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 291.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

@@ -2,3 +2,5 @@ __pycache__/
 *.py[cod]
 /.build/
 /esp/.build/
+*.sublime-project
+*.sublime-workspace
