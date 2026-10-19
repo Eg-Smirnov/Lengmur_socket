@@ -9,7 +9,10 @@ namespace ad7322 {
 namespace {
 
 constexpr uint32_t kSpiClockHz = 2000000;
-const SPISettings kSpiSettings(kSpiClockHz, MSBFIRST, SPI_MODE0);
+// AD7322 samples DIN on falling SCLK edges; shift write data on rising edges.
+const SPISettings kWriteSpiSettings(kSpiClockHz, MSBFIRST, SPI_MODE1);
+// AD7322 updates DOUT on falling edges; sample it on rising edges.
+const SPISettings kReadSpiSettings(kSpiClockHz, MSBFIRST, SPI_MODE0);
 
 // AD7322 register addresses and fields (datasheet Rev. B, Tables 8-13).
 constexpr uint16_t kRangeRegisterPm10V = 0xA000;  // VIN0/VIN1: +/-10 V.
@@ -21,7 +24,7 @@ constexpr uint16_t kControlPseudoDifferential =
 Pair::Pair() : voltage_spi_(HSPI), current_spi_(VSPI) {}
 
 uint16_t Pair::transfer(SPIClass &spi, uint8_t cs_pin, uint16_t command) {
-  spi.beginTransaction(kSpiSettings);
+  spi.beginTransaction(kWriteSpiSettings);
   digitalWrite(cs_pin, LOW);
   const uint16_t frame = spi.transfer16(command);
   digitalWrite(cs_pin, HIGH);
@@ -78,8 +81,8 @@ bool Pair::read(SamplePair &sample) {
     return false;
   }
 
-  voltage_spi_.beginTransaction(kSpiSettings);
-  current_spi_.beginTransaction(kSpiSettings);
+  voltage_spi_.beginTransaction(kReadSpiSettings);
+  current_spi_.beginTransaction(kReadSpiSettings);
 
   // Optional timestamp measurement, currently disabled to keep SamplePair
   // minimal and avoid extra work between the two CS falling edges:
