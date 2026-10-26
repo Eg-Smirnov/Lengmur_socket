@@ -16,8 +16,8 @@ const SPISettings kReadSpiSettings(kSpiClockHz, MSBFIRST, SPI_MODE0);
 
 // AD7322 register addresses and fields (datasheet Rev. B, Tables 8-13).
 constexpr uint16_t kRangeRegisterPm10V = 0xA000;  // VIN0/VIN1: +/-10 V.
-constexpr uint16_t kControlPseudoDifferential =
-    0x8000 | (1U << 8) | (1U << 4);  // MODE0=1, REF=1, ADD0=0.
+constexpr uint16_t kControlSingleEndedVin0 =
+    0x8000 | (1U << 4);  // MODE1:MODE0=00, ADD0=0, REF=1.
 
 }  // namespace
 
@@ -48,8 +48,8 @@ void Pair::begin() {
   // The range register must be written before the control register.
   transfer(voltage_spi_, pins::USPI_CS, kRangeRegisterPm10V);
   transfer(current_spi_, pins::ISPI_CS, kRangeRegisterPm10V);
-  transfer(voltage_spi_, pins::USPI_CS, kControlPseudoDifferential);
-  transfer(current_spi_, pins::ISPI_CS, kControlPseudoDifferential);
+  transfer(voltage_spi_, pins::USPI_CS, kControlSingleEndedVin0);
+  transfer(current_spi_, pins::ISPI_CS, kControlSingleEndedVin0);
 
   delayMicroseconds(500);  // Internal reference start-up time.
   started_ = true;

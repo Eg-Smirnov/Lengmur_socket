@@ -17,8 +17,9 @@ class Pair {
  public:
   Pair();
 
-  // Configures both ADCs for VIN0 - VIN1, +/-10 V, internal reference,
-  // two's-complement output and normal power mode. Discards initial data.
+  // Configures both ADCs for single-ended VIN0 relative to AGND, +/-10 V,
+  // internal reference, two's-complement output and normal power mode.
+  // Discards initial data.
   void begin();
   void end();
 
