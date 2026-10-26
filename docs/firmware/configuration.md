@@ -23,7 +23,7 @@ python tools/generate_config.py
 ```
 
 Скрипт проверяет схему и обновляет
-[`config_generated.h`](../../esp/src/drivers/serial_protocol/config_generated.h).
+[`config_generated.h`](../../esp/src/application/configuration/config_generated.h).
 Сгенерированный файл нельзя редактировать вручную; его следует сохранять в
 репозитории вместе с изменённым `config.json`.
 

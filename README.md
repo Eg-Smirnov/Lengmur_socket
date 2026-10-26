@@ -24,6 +24,7 @@ arduino-cli compile --profile esp32_wroom_32 esp
 Оглавление и описание разделов находятся в [`docs/README.md`](docs/README.md).
 
 - [Аппаратная часть](docs/hardware/overview.md)
+- [Архитектура прошивки](docs/firmware/architecture.md)
 - [Прошивка и драйверы](docs/firmware/configuration.md)
 - [Serial-протокол](docs/protocols/serial.md)
 - [Команды протокола](docs/protocols/commands.md)

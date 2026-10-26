@@ -26,6 +26,31 @@ arduino-cli compile --profile esp32_wroom_32 esp
 
 Команда только компилирует прошивку и не загружает её на плату.
 
+## Нативный тест кодека
+
+Проверить общую очередь и кодек кадров без платы:
+
+```powershell
+g++ -std=c++11 tests/firmware/frame_codec_test.cpp esp/src/application/app_event_queue.cpp esp/src/transport/frame_codec.cpp -o frame_codec_test.exe
+./frame_codec_test.exe
+```
+
+Созданный `frame_codec_test.exe` является локальным артефактом и не должен
+добавляться в репозиторий.
+
+## Нативный тест транзакции конфигурации
+
+Проверить переходы асинхронного `set` через prepare, commit и rollback без
+платы:
+
+```powershell
+g++ -std=c++11 tests/firmware/configuration_transaction_test.cpp -o configuration_transaction_test.exe
+./configuration_transaction_test.exe
+```
+
+Созданный `configuration_transaction_test.exe` также является локальным
+артефактом и не должен добавляться в репозиторий.
+
 > [!WARNING]
 > Проверка проекта заканчивается компиляцией и анализом кода. Не запускайте
 > `arduino-cli upload`, `arduino-cli compile --upload`, `esptool` для записи или

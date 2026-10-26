@@ -1,13 +1,11 @@
-#include "src/drivers/serial_protocol/protocol.h"
-#include "src/acquisition/acquisition.h"
-#include "src/drivers/output_control/output_control.h"
+#include "src/application/application.h"
+
+Application application;
 
 void setup() {
-  outputControlBegin();
-  protocolBegin();
-  acquisitionBegin();
+  application.begin();
 }
 
 void loop() {
-  protocolPoll();
+  delay(1000);
 }
