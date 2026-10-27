@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import queue
 import struct
 import threading
 import time
@@ -24,6 +25,7 @@ MAGIC = b"LS"
 PROTOCOL_VERSION = 1
 PACKET_COMMAND = 0
 PACKET_RESPONSE = 1
+PACKET_DATA = 2
 MAX_FRAME_PAYLOAD_BYTES = 2048
 MAX_JSON_PAYLOAD_BYTES = 256
 INT32_MIN = -(2**31)
@@ -50,7 +52,12 @@ def load_schema() -> dict[str, dict[str, Any]]:
 class SerialClient:
     def __init__(self) -> None:
         self._port: Any = None
-        self._lock = threading.Lock()
+        self._write_lock = threading.Lock()
+        self._responses: queue.Queue[dict[str, Any]] = queue.Queue()
+        self._sweeps: queue.Queue[list[tuple[int, int]]] = queue.Queue()
+        self._reader: threading.Thread | None = None
+        self._telemetry_lock = threading.Lock()
+        self._latest_telemetry: dict[str, int] | None = None
 
     @property
     def connected(self) -> bool:
@@ -59,17 +66,20 @@ class SerialClient:
     def connect(self, port_name: str) -> None:
         if serial is None:
             raise RuntimeError("Не установлен pyserial. Выполните: pip install -r laptop/requirements.txt")
-        with self._lock:
-            self.close()
-            self._port = serial.Serial(
-                port=port_name,
-                baudrate=BAUD_RATE,
-                timeout=REQUEST_TIMEOUT,
-                write_timeout=REQUEST_TIMEOUT,
-            )
-            # Many USB-UART adapters reset ESP32 when the port is opened.
-            time.sleep(1.5)
-            self._port.reset_input_buffer()
+        self.close()
+        self._port = serial.Serial(
+            port=port_name,
+            baudrate=BAUD_RATE,
+            timeout=0.1,
+            write_timeout=REQUEST_TIMEOUT,
+        )
+        # Many USB-UART adapters reset ESP32 when the port is opened.
+        time.sleep(1.5)
+        self._port.reset_input_buffer()
+        self._responses = queue.Queue()
+        self._sweeps = queue.Queue()
+        self._reader = threading.Thread(target=self._read_loop, daemon=True)
+        self._reader.start()
 
     def close(self) -> None:
         if self._port is not None:
@@ -77,6 +87,7 @@ class SerialClient:
                 self._port.close()
             finally:
                 self._port = None
+        self._reader = None
 
     @staticmethod
     def _encode_frame(packet_type: int, payload: bytes) -> bytes:
@@ -86,38 +97,80 @@ class SerialClient:
         body = header + payload
         return body + struct.pack("<I", zlib.crc32(body))
 
-    def _read_exactly(self, size: int, deadline: float) -> bytes:
+    def _read_exactly(self, size: int, deadline: float, port: Any = None) -> bytes:
         result = bytearray()
+        source = self._port if port is None else port
         while len(result) < size and time.monotonic() < deadline:
-            self._port.timeout = max(0.05, deadline - time.monotonic())
-            chunk = self._port.read(size - len(result))
+            source.timeout = max(0.05, deadline - time.monotonic())
+            chunk = source.read(size - len(result))
             if chunk:
                 result.extend(chunk)
         if len(result) != size:
             raise TimeoutError("ESP32 не передала кадр полностью")
         return bytes(result)
 
-    def _read_frame(self, deadline: float) -> tuple[int, bytes]:
+    def _read_frame(self, deadline: float, port: Any = None) -> tuple[int, bytes]:
         matched = 0
         while time.monotonic() < deadline:
-            byte = self._read_exactly(1, deadline)[0]
+            byte = self._read_exactly(1, deadline, port)[0]
             if byte == MAGIC[matched]:
                 matched += 1
                 if matched == len(MAGIC):
                     break
             else:
                 matched = 1 if byte == MAGIC[0] else 0
-        header_tail = self._read_exactly(3, deadline)
+        header_tail = self._read_exactly(3, deadline, port)
         type_and_version, payload_size = struct.unpack("<BH", header_tail)
         if (type_and_version & 0x1F) != PROTOCOL_VERSION:
             raise RuntimeError("Неподдерживаемая версия протокола ESP32")
         if payload_size > MAX_FRAME_PAYLOAD_BYTES:
             raise RuntimeError("ESP32 объявила слишком большой кадр")
-        payload = self._read_exactly(payload_size, deadline)
-        received_crc = struct.unpack("<I", self._read_exactly(4, deadline))[0]
+        payload = self._read_exactly(payload_size, deadline, port)
+        received_crc = struct.unpack("<I", self._read_exactly(4, deadline, port))[0]
         if zlib.crc32(MAGIC + header_tail + payload) != received_crc:
             raise RuntimeError("Ошибка CRC кадра от ESP32")
         return type_and_version >> 5, payload
+
+    def _read_loop(self) -> None:
+        port = self._port
+        while port is not None and self._port is port and port.is_open:
+            try:
+                packet_type, payload = self._read_frame(time.monotonic() + 0.5, port)
+            except TimeoutError:
+                continue
+            except Exception:
+                if self._port is port and port.is_open:
+                    time.sleep(0.05)
+                continue
+
+            if packet_type == PACKET_RESPONSE:
+                try:
+                    response = json.loads(payload.decode("utf-8"))
+                except (UnicodeDecodeError, json.JSONDecodeError):
+                    continue
+                if isinstance(response, dict):
+                    if response.get("type") == "telemetry":
+                        with self._telemetry_lock:
+                            self._latest_telemetry = response
+                    else:
+                        self._responses.put(response)
+            elif packet_type == PACKET_DATA:
+                if len(payload) < 2:
+                    continue
+                count = struct.unpack_from("<H", payload)[0]
+                if count > 100 or len(payload) != 2 + count * 4:
+                    continue
+                points = [
+                    struct.unpack_from("<hh", payload, 2 + index * 4)
+                    for index in range(count)
+                ]
+                self._sweeps.put(points)
+
+    def latest_telemetry(self) -> dict[str, int] | None:
+        with self._telemetry_lock:
+            result = self._latest_telemetry
+            self._latest_telemetry = None
+            return result
 
     def request(self, payload: dict[str, Any]) -> dict[str, Any]:
         encoded = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
@@ -125,25 +178,26 @@ class SerialClient:
             raise ValueError(
                 f"Запрос занимает {len(encoded)} байт, предел — {MAX_JSON_PAYLOAD_BYTES}"
             )
-        with self._lock:
-            if not self.connected:
-                raise RuntimeError("Нет соединения с ESP32")
+        if not self.connected:
+            raise RuntimeError("Нет соединения с ESP32")
+        with self._write_lock:
             self._port.write(self._encode_frame(PACKET_COMMAND, encoded))
             self._port.flush()
-            deadline = time.monotonic() + REQUEST_TIMEOUT
-            while time.monotonic() < deadline:
-                packet_type, packet_payload = self._read_frame(deadline)
-                try:
-                    response = json.loads(packet_payload.decode("utf-8"))
-                except (UnicodeDecodeError, json.JSONDecodeError):
-                    continue
-                if packet_type == PACKET_RESPONSE and isinstance(response, dict):
-                    if not response.get("ok", False):
-                        raise RuntimeError(
-                            f"ESP32 вернула ошибку: {response.get('error', 'unknown_error')}"
-                        )
-                    return response
-            raise TimeoutError("ESP32 не ответила за отведённое время")
+        try:
+            response = self._responses.get(timeout=REQUEST_TIMEOUT)
+        except queue.Empty as error:
+            raise TimeoutError("ESP32 не ответила за отведённое время") from error
+        if not response.get("ok", False):
+            raise RuntimeError(
+                f"ESP32 вернула ошибку: {response.get('error', 'unknown_error')}"
+            )
+        return response
+
+    def receive_sweep(self, timeout: float = 300.0) -> list[tuple[int, int]]:
+        try:
+            return self._sweeps.get(timeout=timeout)
+        except queue.Empty as error:
+            raise TimeoutError("Sweep не завершился за отведённое время") from error
 
 
 
@@ -152,17 +206,20 @@ class Application(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("Lengmur Socket")
-        self.minsize(520, 360)
-        self.geometry("640x440")
+        self.minsize(640, 480)
+        self.geometry("760x560")
         self.client = SerialClient()
         self.schema = load_schema()
         self.field_vars: dict[str, tk.Variable] = {}
         self.busy = False
         self.port_var = tk.StringVar()
         self.status_var = tk.StringVar(value="Не подключено")
+        self.telemetry_var = tk.StringVar(value="U: —    I: — (сырые коды АЦП)")
+        self.sweep_points: list[tuple[int, int]] = []
         self._build_ui()
         self.refresh_ports()
         self.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.after(250, self._poll_telemetry)
 
     def _build_ui(self) -> None:
         connection = ttk.Frame(self, padding=(10, 10, 10, 4))
@@ -178,9 +235,26 @@ class Application(tk.Tk):
 
         self.notebook = ttk.Notebook(self)
         self.settings_tab = ttk.Frame(self.notebook, padding=14)
+        self.measurement_tab = ttk.Frame(self.notebook, padding=12)
         self.notebook.add(self.settings_tab, text="Настройки")
+        self.notebook.add(self.measurement_tab, text="Измерения")
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=6)
         self.notebook.bind("<<NotebookTabChanged>>", self.on_tab_changed)
+
+        measurement_header = ttk.Frame(self.measurement_tab)
+        measurement_header.pack(fill=tk.X)
+        ttk.Label(measurement_header, textvariable=self.telemetry_var).pack(side=tk.LEFT)
+        self.sweep_button = ttk.Button(
+            measurement_header, text="Снять sweep", command=self.start_sweep,
+            state=tk.DISABLED,
+        )
+        self.sweep_button.pack(side=tk.RIGHT)
+        self.graph = tk.Canvas(
+            self.measurement_tab, background="white", highlightthickness=1,
+            highlightbackground="#b8b8b8",
+        )
+        self.graph.pack(fill=tk.BOTH, expand=True, pady=(12, 0))
+        self.graph.bind("<Configure>", lambda _event: self._draw_sweep())
 
         form = ttk.Frame(self.settings_tab)
         form.pack(fill=tk.BOTH, expand=True)
@@ -255,6 +329,67 @@ class Application(tk.Tk):
     def on_tab_changed(self, _event: tk.Event) -> None:
         if self.notebook.select() == str(self.settings_tab) and self.client.connected:
             self.load_settings()
+
+    def _poll_telemetry(self) -> None:
+        telemetry = self.client.latest_telemetry()
+        if telemetry is not None:
+            self.telemetry_var.set(
+                f"U: {telemetry.get('voltage', '—')}    "
+                f"I: {telemetry.get('current', '—')} (сырые коды АЦП)"
+            )
+        self.after(250, self._poll_telemetry)
+
+    def start_sweep(self) -> None:
+        def measure() -> list[tuple[int, int]]:
+            self.client.request({"op": "start_sweep"})
+            return self.client.receive_sweep()
+
+        def measured(points: list[tuple[int, int]]) -> None:
+            self.sweep_points = points
+            self._draw_sweep()
+            self.status_var.set(f"Sweep завершён: {len(points)} точек")
+
+        self._run_background("Ожидание диапазона и сбор sweep…", measure, measured)
+
+    def _draw_sweep(self) -> None:
+        if not hasattr(self, "graph"):
+            return
+        self.graph.delete("all")
+        width = max(1, self.graph.winfo_width())
+        height = max(1, self.graph.winfo_height())
+        left, right, top, bottom = 58, width - 20, 24, height - 48
+        if right <= left or bottom <= top:
+            return
+        self.graph.create_line(left, top, left, bottom, fill="#404040")
+        self.graph.create_line(left, bottom, right, bottom, fill="#404040")
+        self.graph.create_text((left + right) // 2, height - 18,
+                               text="Напряжение (код АЦП)")
+        self.graph.create_text(17, (top + bottom) // 2,
+                               text="Ток (код АЦП)", angle=90)
+        if not self.sweep_points:
+            self.graph.create_text((left + right) // 2, (top + bottom) // 2,
+                                   text="Нажмите «Снять sweep» для измерения")
+            return
+        ordered_points = sorted(self.sweep_points, key=lambda point: point[0])
+        voltages = [point[0] for point in ordered_points]
+        currents = [point[1] for point in ordered_points]
+        min_v, max_v = min(voltages), max(voltages)
+        min_i, max_i = min(currents), max(currents)
+        span_v = max(1, max_v - min_v)
+        span_i = max(1, max_i - min_i)
+        coords: list[float] = []
+        for voltage, current in ordered_points:
+            x = left + (voltage - min_v) * (right - left) / span_v
+            y = bottom - (current - min_i) * (bottom - top) / span_i
+            coords.extend((x, y))
+        if len(coords) >= 4:
+            self.graph.create_line(*coords, fill="#1769aa", width=2)
+        else:
+            self.graph.create_oval(coords[0] - 3, coords[1] - 3,
+                                   coords[0] + 3, coords[1] + 3,
+                                   fill="#1769aa", outline="")
+        self.graph.create_text(left, top - 8, anchor=tk.W,
+                               text=f"U: {min_v}…{max_v}; I: {min_i}…{max_i}")
 
     def load_settings(self) -> None:
         def read() -> dict[str, Any]:
@@ -353,6 +488,7 @@ class Application(tk.Tk):
         settings_state = (
             tk.NORMAL if enabled and self.client.connected else tk.DISABLED
         )
+        self.sweep_button.configure(state=settings_state)
         self.reload_button.configure(state=settings_state)
         self.save_button.configure(state=settings_state)
 

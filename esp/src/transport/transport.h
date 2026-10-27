@@ -17,4 +17,6 @@ class Transport {
 
   /** Encodes and sends one application response payload. */
   virtual bool sendResponse(const uint8_t *payload, size_t payload_size) = 0;
+  /** Encodes and sends one binary data payload. */
+  virtual bool sendData(const uint8_t *payload, size_t payload_size) = 0;
 };

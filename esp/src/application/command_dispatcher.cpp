@@ -7,8 +7,24 @@
 #include "app_event_queue.h"
 #include "configuration/configuration_store.h"
 
+namespace {
+constexpr size_t kSweepPayloadHeaderSize = 2;
+constexpr size_t kSweepPayloadSize = kSweepPayloadHeaderSize +
+    AcquisitionTask::kMaxSweepPoints * 2 * sizeof(int16_t);
+
+void writeU16(uint8_t *target, uint16_t value) {
+  target[0] = static_cast<uint8_t>(value);
+  target[1] = static_cast<uint8_t>(value >> 8);
+}
+}  // namespace
+
 void CommandDispatcher::processOne(AppEventQueue &event_queue,
                                    Transport &transport) {
+  if (sweep_pending_ && event_queue.empty()) {
+    sendSweepData(transport);
+    sweep_pending_ = false;
+    return;
+  }
   AppEvent event{};
   if (!event_queue.pop(event)) {
     return;
@@ -56,6 +72,10 @@ void CommandDispatcher::processTransportRequest(
     processGet(request, event_queue);
   } else if (strcmp(operation, "set") == 0) {
     processSet(request, event_queue);
+  } else if (strcmp(operation, "start_sweep") == 0) {
+    if (!acquisition_.send({AcquisitionCommandType::StartSweep, 0, {}})) {
+      enqueueError("queue_full", event_queue);
+    }
   } else {
     enqueueError("invalid_operation", event_queue);
   }
@@ -141,6 +161,26 @@ void CommandDispatcher::processPendingAcquisition() {
 void CommandDispatcher::processAcquisitionResult(
     const AcquisitionResult &result, AppEventQueue &event_queue) {
   switch (result.type) {
+    case AcquisitionResultType::Telemetry: {
+      JsonDocument telemetry;
+      telemetry["type"] = "telemetry";
+      telemetry["voltage"] = result.voltage;
+      telemetry["current"] = result.current;
+      enqueueResponse(telemetry, event_queue);
+      break;
+    }
+    case AcquisitionResultType::SweepStarted:
+      enqueueSuccess(event_queue);
+      break;
+    case AcquisitionResultType::SweepCompleted:
+      sweep_pending_ = true;
+      break;
+    case AcquisitionResultType::SweepRejected:
+      enqueueError("sweep_busy_or_invalid_config", event_queue);
+      break;
+    case AcquisitionResultType::SweepFailed:
+      enqueueError("measurement_failed", event_queue);
+      break;
     case AcquisitionResultType::ConfigPrepared: {
       if (transaction_.state() !=
               ConfigurationTransaction::State::AwaitingPrepare ||
@@ -178,6 +218,26 @@ void CommandDispatcher::processAcquisitionResult(
     default:
       break;
   }
+}
+
+void CommandDispatcher::sendSweepData(Transport &transport) {
+  ad7322::SamplePair samples[AcquisitionTask::kMaxSweepPoints]{};
+  size_t count = 0;
+  if (!acquisition_.copySweep(samples, AcquisitionTask::kMaxSweepPoints,
+                              count)) {
+    return;
+  }
+
+  uint8_t payload[kSweepPayloadSize]{};
+  writeU16(payload, static_cast<uint16_t>(count));
+  for (size_t index = 0; index < count; ++index) {
+    writeU16(payload + kSweepPayloadHeaderSize + index * 4,
+             static_cast<uint16_t>(samples[index].voltage));
+    writeU16(payload + kSweepPayloadHeaderSize + index * 4 + 2,
+             static_cast<uint16_t>(samples[index].current));
+  }
+  transport.sendData(payload, kSweepPayloadHeaderSize + count * 4);
+  acquisition_.send({AcquisitionCommandType::ReleaseSweep, 0, {}});
 }
 
 bool CommandDispatcher::enqueueResponse(const JsonDocument &response,

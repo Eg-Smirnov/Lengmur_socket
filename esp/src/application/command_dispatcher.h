@@ -26,6 +26,7 @@ class CommandDispatcher {
   /** Handles one result returned by the acquisition owner task. */
   void processAcquisitionResult(const AcquisitionResult &result,
                                 AppEventQueue &event_queue);
+  void sendSweepData(Transport &transport);
 
  private:
   void processTransportRequest(const AppEvent &event,
@@ -43,4 +44,5 @@ class CommandDispatcher {
   ConfigurationTransaction transaction_;
   JsonDocument pending_candidate_;
   uint32_t next_transaction_id_ = 1;
+  bool sweep_pending_ = false;
 };
