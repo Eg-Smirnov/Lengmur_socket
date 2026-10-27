@@ -34,6 +34,10 @@ bool SerialTransport::sendResponse(const uint8_t *payload,
   return sendFrame(FrameCodec::kResponseType, payload, payload_size);
 }
 
+bool SerialTransport::sendData(const uint8_t *payload, size_t payload_size) {
+  return sendFrame(2, payload, payload_size);
+}
+
 bool SerialTransport::sendFrame(uint8_t type, const uint8_t *payload,
                                 size_t payload_size) {
   uint8_t header[FrameCodec::kHeaderSize];

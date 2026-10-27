@@ -8,6 +8,8 @@ enum class AcquisitionCommandType : uint8_t {
   PrepareConfig,
   CommitConfig,
   RollbackConfig,
+  StartSweep,
+  ReleaseSweep,
 };
 
 struct AcquisitionCommand {
@@ -24,9 +26,16 @@ enum class AcquisitionResultType : uint8_t {
   ConfigCommitted,
   ConfigRolledBack,
   ConfigRollbackFailed,
+  Telemetry,
+  SweepStarted,
+  SweepCompleted,
+  SweepRejected,
+  SweepFailed,
 };
 
 struct AcquisitionResult {
   AcquisitionResultType type;
   uint32_t transaction_id;
+  int16_t voltage;
+  int16_t current;
 };

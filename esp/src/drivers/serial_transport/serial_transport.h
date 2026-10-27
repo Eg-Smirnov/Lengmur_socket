@@ -15,6 +15,7 @@ class SerialTransport : public Transport {
 
   /** Encodes and writes one JSON response frame to Serial. */
   bool sendResponse(const uint8_t *payload, size_t payload_size) override;
+  bool sendData(const uint8_t *payload, size_t payload_size) override;
 
  private:
   bool sendFrame(uint8_t type, const uint8_t *payload, size_t payload_size);
