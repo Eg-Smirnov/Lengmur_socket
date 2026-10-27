@@ -6,3 +6,21 @@ __pycache__/
 *.sublime-workspace
 frame_codec_test.exe
 configuration_transaction_test.exe
+
+# LabVIEW-generated binaries and machine-local project metadata.
+# Keep these rules scoped to the LabVIEW application directory.
+/laptop/labview/**/*.lvlibp
+/laptop/labview/**/*.llb
+/laptop/labview/**/*.dll
+/laptop/labview/**/*.so
+/laptop/labview/**/*.so.*
+/laptop/labview/**/*.dylib
+/laptop/labview/**/*.exe
+/laptop/labview/**/*.aliases
+/laptop/labview/**/*.lvlps
+/laptop/labview/**/*.lvprojstate
+/laptop/labview/**/*.UserState
+/laptop/labview/**/.cache/
+/laptop/labview/Builds/
+/laptop/labview/screenshots/*
+!/laptop/labview/screenshots/.gitkeep

@@ -33,7 +33,7 @@ INT32_MAX = 2**31 - 1
 
 
 def load_schema() -> dict[str, dict[str, Any]]:
-    config_path = Path(__file__).resolve().parent.parent / "config.json"
+    config_path = Path(__file__).resolve().parent.parent.parent / "config.json"
     with config_path.open("r", encoding="utf-8") as config_file:
         document = json.load(config_file)
     fields = document.get("fields")
@@ -65,7 +65,7 @@ class SerialClient:
 
     def connect(self, port_name: str) -> None:
         if serial is None:
-            raise RuntimeError("Не установлен pyserial. Выполните: pip install -r laptop/requirements.txt")
+            raise RuntimeError("Не установлен pyserial. Выполните: pip install -r laptop/python/requirements.txt")
         self.close()
         self._port = serial.Serial(
             port=port_name,
