@@ -1,0 +1,775 @@
+{
+  "cases": [
+    {
+      "name": "T01_empty_input",
+      "purpose": "Пустой вызов не выдаёт кадры или остаток.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T02_noise_only",
+      "purpose": "Мусор без сигнатуры отбрасывается.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "00FF007E10",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T03_trailing_L",
+      "purpose": "Одинокий первый байт сигнатуры сохраняется.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "00FF4C",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T04_partial_signature",
+      "purpose": "Неполная сигнатура LS сохраняется целиком.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "004C53",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C53",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T05_partial_header",
+      "purpose": "Неполный заголовок сохраняется от сигнатуры.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C530109",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C530109",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T06_valid_empty_payload",
+      "purpose": "Кадр типа 0 с пустым payload.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C530100002E885B83",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": ""
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T07_valid_ascii_123456789",
+      "purpose": "Контрольный непустой кадр типа 0.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53010900313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T08_binary_payload",
+      "purpose": "Payload содержит NUL и произвольные бинарные байты.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53410600004C53FF0039ADB0564F",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 2,
+                "payload_hex": "004C53FF0039"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T09_magic_inside_valid_payload",
+      "purpose": "Сигнатура внутри валидного payload не начинает новый кадр.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C534110007072656669784C5300007375666669780A96D5A1",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 2,
+                "payload_hex": "7072656669784C530000737566666978"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T10_reserved_type_7",
+      "purpose": "Тип 7 декодируется как поле кадра; версия остаётся 1.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53E11E0072657365727665642D747970652D69732D7374696C6C2D612D6672616D6536F26EB8",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 7,
+                "payload_hex": "72657365727665642D747970652D69732D7374696C6C2D612D6672616D65"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T11_two_frames_back_to_back",
+      "purpose": "Два кадра без разделителя.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C530100002E885B834C53010900313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": ""
+              },
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T12_noise_before_valid",
+      "purpose": "Мусор перед корректной сигнатурой пропускается.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "00994C007F4C53010900313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T13_overlap_and_oversize_then_valid",
+      "purpose": "Ложный LS с длиной 2049 не блокирует следующий кадр.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C4C530101084C53010900313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T14_bad_crc_only",
+      "purpose": "Кадр с неверной CRC отбрасывается без error cluster.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53010900313233343536373839C61BA2C2",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T15_bad_crc_then_valid",
+      "purpose": "После неверной CRC декодер находит следующий кадр.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53010900313233343536373839C61BA2C24C53010900313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T16_bad_outer_crc_contains_valid_frame",
+      "purpose": "При восстановлении после CRC ошибки находится вложенный валидный кадр.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53011F004141414C53211000696E736964652D6261642D6672616D6559A8121A5A5A5A41BE54A6",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 1,
+                "payload_hex": "696E736964652D6261642D6672616D65"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T17_valid_crc_unsupported_version",
+      "purpose": "CRC проверяется до версии; валидный кадр версии 2 даёт фатальную ошибку 5004.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53020D006F746865722D76657273696F6E85AB0CEE",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": null,
+            "error": {
+              "status": true,
+              "code": 5004,
+              "source": "unsupported protocol version"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "T18_unsupported_version_bad_crc",
+      "purpose": "Неверная CRC не должна порождать 5004; следующий кадр декодируется.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53020D006F746865722D76657273696F6E85AB0CEF4C53010900313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T19_unsupported_stops_before_later_valid_frame",
+      "purpose": "После 5004 декодер останавливается; следующий корректный кадр не декодируется.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53020D006F746865722D76657273696F6E85AB0CEE4C53010900313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": null,
+            "error": {
+              "status": true,
+              "code": 5004,
+              "source": "unsupported protocol version"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "T20_valid_before_unsupported_stops_call",
+      "purpose": "Кадр до версии 2 может быть найден, затем 5004 останавливает разбор до следующего кадра.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C530100002E885B834C53020D006F746865722D76657273696F6E85AB0CEE4C53010900313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": ""
+              }
+            ],
+            "remaining_hex": null,
+            "error": {
+              "status": true,
+              "code": 5004,
+              "source": "unsupported protocol version"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "T21_partial_unsupported_version",
+      "purpose": "Неполный кадр версии 2 не выставляет 5004, пока не получен и проверен CRC.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53020D006F746865722D76657273696F6E85AB0C",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C53020D006F746865722D76657273696F6E85AB0C",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T22_length_256_little_endian",
+      "purpose": "Длина 256 кодируется байтами 00 01.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53410001000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF041580FC",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 2,
+                "payload_hex": "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T23_max_payload_2048",
+      "purpose": "Граничный допустимый payload размером 2048 байт.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53410008000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFFFA5DCBC1",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 2,
+                "payload_hex": "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F202122232425262728292A2B2C2D2E2F303132333435363738393A3B3C3D3E3F404142434445464748494A4B4C4D4E4F505152535455565758595A5B5C5D5E5F606162636465666768696A6B6C6D6E6F707172737475767778797A7B7C7D7E7F808182838485868788898A8B8C8D8E8F909192939495969798999A9B9C9D9E9FA0A1A2A3A4A5A6A7A8A9AAABACADAEAFB0B1B2B3B4B5B6B7B8B9BABBBCBDBEBFC0C1C2C3C4C5C6C7C8C9CACBCCCDCECFD0D1D2D3D4D5D6D7D8D9DADBDCDDDEDFE0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T24_oversize_2049_then_valid",
+      "purpose": "Длина 2049 — помеха; ошибка не выставляется, следующий кадр декодируется.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C530101084C53010900313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T25_oversize_header_only",
+      "purpose": "Один oversized-заголовок не создаёт 5003/5004 и не остаётся pending.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53010108",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T26_incomplete_payload",
+      "purpose": "Payload не пришёл целиком: весь кандидат остаётся в remaining bytes.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C5301090031323334",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C5301090031323334",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T27_missing_crc",
+      "purpose": "Payload полный, CRC ещё не пришла.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53010900313233343536373839",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C53010900313233343536373839",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T28_partial_crc_1_byte",
+      "purpose": "В буфере только один байт CRC.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53010900313233343536373839C6",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C53010900313233343536373839C6",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T29_partial_crc_2_bytes",
+      "purpose": "В буфере только два байта CRC.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53010900313233343536373839C61B",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C53010900313233343536373839C61B",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T30_partial_crc_3_bytes",
+      "purpose": "В буфере только три байта CRC.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53010900313233343536373839C61BA2",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C53010900313233343536373839C61BA2",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T31_split_after_first_magic_byte",
+      "purpose": "Два последовательных вызова: первый возвращает хвост, второй завершает кадр.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C",
+            "error": null
+          }
+        },
+        {
+          "pending_hex": "4C",
+          "data_hex": "53010900313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T32_split_after_signature",
+      "purpose": "Два последовательных вызова: первый возвращает хвост, второй завершает кадр.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C53",
+            "error": null
+          }
+        },
+        {
+          "pending_hex": "4C53",
+          "data_hex": "010900313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T33_split_inside_header",
+      "purpose": "Два последовательных вызова: первый возвращает хвост, второй завершает кадр.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C530109",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C530109",
+            "error": null
+          }
+        },
+        {
+          "pending_hex": "4C530109",
+          "data_hex": "00313233343536373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T34_split_inside_payload",
+      "purpose": "Два последовательных вызова: первый возвращает хвост, второй завершает кадр.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C530109003132333435",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C530109003132333435",
+            "error": null
+          }
+        },
+        {
+          "pending_hex": "4C530109003132333435",
+          "data_hex": "36373839C61BA2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T35_split_inside_crc",
+      "purpose": "Два последовательных вызова: первый возвращает хвост, второй завершает кадр.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53010900313233343536373839C61B",
+          "error_in": null,
+          "expected": {
+            "frames": [],
+            "remaining_hex": "4C53010900313233343536373839C61B",
+            "error": null
+          }
+        },
+        {
+          "pending_hex": "4C53010900313233343536373839C61B",
+          "data_hex": "A2C3",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T36_valid_frame_then_partial_magic",
+      "purpose": "Полный кадр выдаётся, а завершающий 4C сохраняется до следующего чтения.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53010900313233343536373839C61BA2C34C",
+          "error_in": null,
+          "expected": {
+            "frames": [
+              {
+                "packet_type": 0,
+                "payload_hex": "313233343536373839"
+              }
+            ],
+            "remaining_hex": "4C",
+            "error": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "T37_existing_error_in",
+      "purpose": "Входная ошибка проходит без замены; байты сохраняются, декодирование не выполняется.",
+      "calls": [
+        {
+          "pending_hex": "",
+          "data_hex": "4C53010900313233343536373839C61BA2C3",
+          "error_in": {
+            "status": true,
+            "code": 12345,
+            "source": "upstream test error"
+          },
+          "expected": {
+            "frames": [],
+            "remaining_hex": null,
+            "error": {
+              "status": true,
+              "code": 12345,
+              "source": "upstream test error"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

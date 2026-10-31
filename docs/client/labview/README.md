@@ -10,6 +10,8 @@
 
 - [Кодирование кадра](frame-encoding.md) — контракт `Encode Frame.vi`, ограничения
   и контрольные примеры.
+- [Тесты декодера](../../../tests/labview/README.md) — входные сценарии и Python
+  раннер для проверки `Decode Frames.vi` через VI Server.
 - [Ошибки](error-handling.md) — error cluster, порядок распространения ошибок и
   коды клиентской библиотеки.
 
