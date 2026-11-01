@@ -268,7 +268,7 @@ class Application(tk.Tk):
                 widget = ttk.Combobox(
                     form,
                     textvariable=variable,
-                    values=("auto", "200", "1000", "10000", "100000", "1000000", "10000000"),
+                    values=("0 — авто", "200", "1000", "10000", "100000", "1000000", "10000000"),
                     state="readonly",
                 )
             else:
@@ -422,9 +422,7 @@ class Application(tk.Tk):
             elif definition["type"] == "string":
                 value = str(value)
             elif definition["type"] == "shunt_res":
-                value = str(value)
-                if value != "auto":
-                    value = int(value)
+                value = 0 if value.startswith("0") else int(value)
             else:
                 value = bool(value)
             config[name] = value

@@ -31,7 +31,9 @@ def main() -> None:
             raise ValueError(f"invalid bool default for {name}")
         if kind == "string" and type(default) is not str:
             raise ValueError(f"invalid string default for {name}")
-        if kind == "shunt_res" and default != "auto" and default not in {
+        if kind == "shunt_res" and type(default) is not int:
+            raise ValueError(f"invalid shunt_res default for {name}")
+        if kind == "shunt_res" and default != 0 and default not in {
             200, 1000, 10000, 100000, 1000000, 10000000
         }:
             raise ValueError(f"invalid shunt_res default for {name}")

@@ -98,8 +98,8 @@ bool ConfigurationStore::getAcquisitionConfig(
   result.min_voltage = source["min_voltage"].as<int32_t>();
   result.max_voltage = source["max_voltage"].as<int32_t>();
   JsonVariantConst shunt = source["shunt_res"];
-  result.shunt_auto = shunt.is<const char *>();
-  result.shunt_res = result.shunt_auto ? 0 : shunt.as<uint32_t>();
+  result.shunt_res = shunt.as<uint32_t>();
+  result.shunt_auto = result.shunt_res == 0;
   return validValue(FieldType::ShuntResistance, shunt);
 }
 
@@ -117,13 +117,11 @@ bool ConfigurationStore::validValue(FieldType type,
     case FieldType::String:
       return value.is<const char *>();
     case FieldType::ShuntResistance:
-      if (value.is<const char *>()) {
-        return strcmp(value.as<const char *>(), "auto") == 0;
-      }
       if (!value.is<uint32_t>()) {
         return false;
       }
       switch (value.as<uint32_t>()) {
+        case 0:
         case 200:
         case 1000:
         case 10000:

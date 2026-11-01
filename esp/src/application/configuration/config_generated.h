@@ -13,4 +13,4 @@ constexpr FieldDefinition kFields[] = {
     {"shunt_res", FieldType::ShuntResistance},
 };
 constexpr size_t kFieldCount = sizeof(kFields) / sizeof(kFields[0]);
-constexpr char kDefaultConfig[] = "{\"sample_rate\":1000,\"min_voltage\":-10,\"max_voltage\":10,\"shunt_res\":\"auto\"}";
+constexpr char kDefaultConfig[] = "{\"sample_rate\":1000,\"min_voltage\":-10,\"max_voltage\":10,\"shunt_res\":0}";

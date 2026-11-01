@@ -3,6 +3,6 @@
     "sample_rate": { "type": "int32", "default": 1000 },
     "min_voltage": { "type": "int32", "default": -10 },
     "max_voltage": { "type": "int32", "default": 10 },
-    "shunt_res": { "type": "shunt_res", "default": "auto" }
+    "shunt_res": { "type": "shunt_res", "default": 0 }
   }
 }
