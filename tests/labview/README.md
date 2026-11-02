@@ -10,7 +10,7 @@ inside LabVIEW, avoiding ActiveX corruption of bytes above `0x7F`.
 ## Dependency
 
 - Python 3.8 or newer, 64-bit.
-- LabVIEW 2015, 64-bit, installed on the same Windows computer.
+- LabVIEW 2019, 64-bit, installed on the same Windows computer.
 - Python package `pywin32` (listed in `requirements.txt`).
 
 Install the package from the repository root:

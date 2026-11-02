@@ -242,13 +242,19 @@ void CommandDispatcher::sendSweepData(Transport &transport) {
 
 bool CommandDispatcher::enqueueResponse(const JsonDocument &response,
                                         AppEventQueue &event_queue) {
-  const size_t payload_size = measureJson(response);
+  JsonDocument typed_response;
+  typed_response.set(response);
+  if (!typed_response.containsKey("type")) {
+    typed_response["type"] = "response";
+  }
+
+  const size_t payload_size = measureJson(typed_response);
   if (payload_size > kAppEventPayloadSize) {
     return false;
   }
 
   uint8_t payload[kAppEventPayloadSize];
-  if (serializeJson(response, payload, sizeof(payload)) != payload_size) {
+  if (serializeJson(typed_response, payload, sizeof(payload)) != payload_size) {
     return false;
   }
   return event_queue.push(AppCommand::SendTransportResponse, payload,

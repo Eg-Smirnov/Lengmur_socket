@@ -9,7 +9,7 @@ namespace {
 constexpr uint32_t kBaudRate = 115200;
 constexpr size_t kMaxBytesPerProcess = 64;
 constexpr char kQueueFullResponse[] =
-    "{\"ok\":false,\"error\":\"queue_full\"}";
+    "{\"type\":\"response\",\"ok\":false,\"error\":\"queue_full\"}";
 
 }  // namespace
 

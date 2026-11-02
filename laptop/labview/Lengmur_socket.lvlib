@@ -13,7 +13,6 @@
 			<Item Name="Encode Frame.vi" Type="VI" URL="../Internal/Protocol/Encode Frame.vi"/>
 		</Item>
 		<Item Name="Close Transport.vi" Type="VI" URL="../Internal/Close Transport.vi"/>
-		<Item Name="Device Command.ctl" Type="VI" URL="../Internal/Device Command.ctl"/>
 		<Item Name="Device Worker.vi" Type="VI" URL="../Internal/Device Worker.vi"/>
 		<Item Name="Open Transport.vi" Type="VI" URL="../Internal/Open Transport.vi"/>
 		<Item Name="Read Transport.vi" Type="VI" URL="../Internal/Read Transport.vi"/>
@@ -26,7 +25,14 @@
 		<Item Name="hex to ASCII.vi" Type="VI" URL="../tests/hex to ASCII.vi"/>
 	</Item>
 	<Item Name="Types" Type="Folder">
+		<Item Name="Responses" Type="Folder">
+			<Item Name="Device Response.ctl" Type="VI" URL="../Types/Device Response.ctl"/>
+			<Item Name="Get Response.ctl" Type="VI" URL="../Types/Responses/Get Response.ctl"/>
+			<Item Name="Telemetry Response.ctl" Type="VI" URL="../Types/Responses/Telemetry Response.ctl"/>
+		</Item>
 		<Item Name="Decoded Frame.ctl" Type="VI" URL="../Types/Decoded Frame.ctl"/>
+		<Item Name="Device  Operation.ctl" Type="VI" URL="../Types/Device  Operation.ctl"/>
+		<Item Name="Device Command.ctl" Type="VI" URL="../Internal/Device Command.ctl"/>
 		<Item Name="Device Config.ctl" Type="VI" URL="../Types/Device Config.ctl"/>
 		<Item Name="Device Event.ctl" Type="VI" URL="../Types/Device Event.ctl"/>
 		<Item Name="Device Session.ctl" Type="VI" URL="../Types/Device Session.ctl"/>
